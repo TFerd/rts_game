@@ -1,11 +1,15 @@
 use bevy::prelude::*;
+use bevy_inspector_egui::WorldInspectorPlugin;
 
 pub const WINDOW_WIDTH: f32 = 1370.0;
 pub const WINDOW_HEIGHT: f32 = 750.0;
 
+mod buildings;
+mod camera;
 mod gamestates;
 mod levels;
 
+pub use camera::*;
 pub use gamestates::*;
 pub use levels::sandbox_lvl::*;
 
@@ -23,6 +27,9 @@ fn main() {
             },
             ..Default::default()
         }))
-        .add_state(GameState::MainMenu)
+        .add_plugin(WorldInspectorPlugin::new())
+        .add_state(GameState::Gameplay)
+        .add_plugin(SandboxLvlPlugin)
+        .add_plugin(CameraPlugin)
         .run();
 }
