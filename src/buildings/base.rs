@@ -1,10 +1,14 @@
 use bevy::prelude::*;
 
+use crate::utils::Health;
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
-pub struct Base {
-    pub is_player: bool,
-    pub health: f32,
+pub struct Base;
+
+#[derive(Bundle)]
+pub struct BaseBundle {
+    pub building_type: Base,
+    pub health: Health,
 }
 
 pub struct BaseDeathEvent; // gameover?
@@ -17,14 +21,18 @@ impl Plugin for BasePlugin {
     }
 }
 
-fn base_death(bases: Query<&Base>, mut base_death_ew: EventWriter<BaseDeathEvent>) {
-    for base in bases.iter() {
-        if base.health <= 0.0 {
+fn base_death(bases: Query<&Health, With<Base>>, mut base_death_ew: EventWriter<BaseDeathEvent>) {
+    for health in bases.iter() {
+        if health.0 <= 0.0 {
             // base destroyed
             // gameover?
             base_death_ew.send(BaseDeathEvent);
+
+            // play death animation
         }
     }
 }
 
-fn build_base() {}
+fn build_base() {
+    todo!();
+}

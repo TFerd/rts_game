@@ -15,9 +15,27 @@ fn spawn_scene(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
+    commands
+        .spawn(PbrBundle {
+            mesh: meshes.add(Mesh::from(shape::Plane { size: 65.0 })),
+            material: materials.add(Color::rgb(0.1, 0.8, 0.1).into()),
+            ..Default::default()
+        })
+        .insert(Name::new("Ground".to_string()));
+
+    // player base
     commands.spawn(PbrBundle {
-        mesh: meshes.add(Mesh::from(shape::Plane { size: 10.0 })),
-        material: materials.add(Color::rgb(0.1, 0.8, 0.1).into()),
+        mesh: meshes.add(Mesh::from(shape::Cube { size: 2.0 })),
+        material: materials.add(Color::BLUE.into()),
+        transform: Transform::from_xyz(-20.0, 1.0, -20.0),
+        ..Default::default()
+    });
+
+    // enemy base
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(Mesh::from(shape::Cube { size: 2.0 })),
+        material: materials.add(Color::RED.into()),
+        transform: Transform::from_xyz(20.0, 1.0, 20.0),
         ..Default::default()
     });
 }

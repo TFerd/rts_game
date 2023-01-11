@@ -8,6 +8,7 @@ mod buildings;
 mod camera;
 mod gamestates;
 mod levels;
+mod utils;
 
 pub use camera::*;
 pub use gamestates::*;
