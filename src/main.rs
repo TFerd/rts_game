@@ -9,6 +9,7 @@ mod camera;
 mod gamestates;
 mod levels;
 mod utils;
+mod units;
 
 pub use camera::*;
 pub use gamestates::*;
