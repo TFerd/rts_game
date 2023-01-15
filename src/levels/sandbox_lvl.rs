@@ -1,6 +1,11 @@
 use bevy::prelude::*;
+use bevy_mod_picking::*;
 
-use crate::GameState;
+use crate::{
+    buildings::base::{Base, BaseBundle},
+    utils::Health,
+    GameState,
+};
 
 pub struct SandboxLvlPlugin;
 
@@ -24,18 +29,32 @@ fn spawn_scene(
         .insert(Name::new("Ground".to_string()));
 
     // player base
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(Mesh::from(shape::Cube { size: 2.0 })),
-        material: materials.add(Color::BLUE.into()),
-        transform: Transform::from_xyz(-20.0, 1.0, -20.0),
-        ..Default::default()
-    });
+    commands
+        .spawn(PbrBundle {
+            mesh: meshes.add(Mesh::from(shape::Cube { size: 2.0 })),
+            material: materials.add(Color::BLUE.into()),
+            transform: Transform::from_xyz(-20.0, 1.0, -20.0),
+            ..Default::default()
+        })
+        .insert(BaseBundle {
+            building_type: Base,
+            health: Health(10.0),
+        })
+        .insert(PickableBundle::default());
 
     // enemy base
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(Mesh::from(shape::Cube { size: 2.0 })),
-        material: materials.add(Color::RED.into()),
-        transform: Transform::from_xyz(20.0, 1.0, 20.0),
-        ..Default::default()
-    });
+    commands
+        .spawn(PbrBundle {
+            mesh: meshes.add(Mesh::from(shape::Cube { size: 2.0 })),
+            material: materials.add(Color::RED.into()),
+            transform: Transform::from_xyz(20.0, 1.0, 20.0),
+            ..Default::default()
+        })
+        .insert(BaseBundle {
+            building_type: Base,
+            health: Health(10.0),
+        })
+        .insert(PickableBundle::default());
+
+    // sun
 }

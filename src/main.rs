@@ -7,10 +7,12 @@ pub const WINDOW_HEIGHT: f32 = 750.0;
 mod buildings;
 mod camera;
 mod gamestates;
+mod input_handling;
 mod levels;
-mod utils;
 mod units;
+mod utils;
 
+use buildings::buildings::BuildingsPluginGroup;
 pub use camera::*;
 pub use gamestates::*;
 pub use levels::sandbox_lvl::*;
@@ -33,5 +35,6 @@ fn main() {
         .add_state(GameState::Gameplay)
         .add_plugin(SandboxLvlPlugin)
         .add_plugin(CameraPlugin)
+        .add_plugins(BuildingsPluginGroup)
         .run();
 }
