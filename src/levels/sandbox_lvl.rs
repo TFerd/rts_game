@@ -40,7 +40,8 @@ fn spawn_scene(
             building_type: Base,
             health: Health(10.0),
         })
-        .insert(PickableBundle::default());
+        .insert(PickableBundle::default())
+        .insert(Name::new("Player Base".to_string()));
 
     // enemy base
     commands
@@ -54,7 +55,8 @@ fn spawn_scene(
             building_type: Base,
             health: Health(10.0),
         })
-        .insert(PickableBundle::default());
+        .insert(PickableBundle::default())
+        .insert(Name::new("Enemy Base".to_string()));
 
     // sun
 }

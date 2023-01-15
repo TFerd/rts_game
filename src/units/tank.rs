@@ -38,6 +38,7 @@ fn spawn_tank(
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     for ev in ev_spawntank.iter() {
+        info!("Spawning tank.");
         commands.spawn((
             PbrBundle {
                 mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),

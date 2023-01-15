@@ -16,7 +16,7 @@ impl Plugin for InputPlugin {
 
 // fn gameplay controls
 fn gameplay_controls(keyboard: Res<Input<KeyCode>>, mut ev_spawntank: EventWriter<SpawnTankEvent>) {
-    if keyboard.pressed(KeyCode::Space) {
+    if keyboard.just_pressed(KeyCode::Space) {
         ev_spawntank.send(SpawnTankEvent {
             is_player: true,
             position: Vec3 {

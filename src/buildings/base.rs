@@ -25,6 +25,7 @@ impl Plugin for BasePlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<Base>()
             .add_event::<BaseBuildEvent>()
+            .add_event::<BaseDeathEvent>()
             .add_system_set(
                 SystemSet::on_update(GameState::Gameplay)
                     .with_system(base_death)

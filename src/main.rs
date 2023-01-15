@@ -15,7 +15,9 @@ mod utils;
 use buildings::buildings::BuildingsPluginGroup;
 pub use camera::*;
 pub use gamestates::*;
+use input_handling::InputPlugin;
 pub use levels::sandbox_lvl::*;
+use units::units::UnitsPluginGroup;
 
 fn main() {
     App::new()
@@ -35,6 +37,8 @@ fn main() {
         .add_state(GameState::Gameplay)
         .add_plugin(SandboxLvlPlugin)
         .add_plugin(CameraPlugin)
+        .add_plugin(InputPlugin)
         .add_plugins(BuildingsPluginGroup)
+        .add_plugins(UnitsPluginGroup)
         .run();
 }
