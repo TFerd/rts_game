@@ -20,6 +20,8 @@ fn spawn_scene(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
+    let selected_collider_color = materials.add(Color::rgba(0.3, 0.9, 0.3, 0.9).into());
+
     commands
         .spawn(PbrBundle {
             mesh: meshes.add(Mesh::from(shape::Plane { size: 65.0 })),
@@ -33,7 +35,7 @@ fn spawn_scene(
         .spawn(PbrBundle {
             mesh: meshes.add(Mesh::from(shape::Cube { size: 2.0 })),
             material: materials.add(Color::BLUE.into()),
-            transform: Transform::from_xyz(-20.0, 1.0, -20.0),
+            transform: Transform::from_xyz(-10.0, 1.0, 10.0),
             ..Default::default()
         })
         .insert(BaseBundle {
@@ -58,5 +60,14 @@ fn spawn_scene(
         .insert(PickableBundle::default())
         .insert(Name::new("Enemy Base".to_string()));
 
-    // sun
+    // @TODO: add sun
+    commands.spawn(PointLightBundle {
+        point_light: PointLight {
+            intensity: (1500.0),
+            shadows_enabled: (true),
+            ..default()
+        },
+        transform: Transform::from_xyz(4.0, 8.0, 4.0),
+        ..default()
+    });
 }

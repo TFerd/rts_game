@@ -29,7 +29,7 @@ fn spawn_camera(mut commands: Commands) {
         .insert(PickingCameraBundle::default())
         .insert(CameraMovement {
             panning: false,
-            pan_speed: 10.0,
+            pan_speed: 15.0,
             mouse_pan_speed: 10.0,
         });
 }

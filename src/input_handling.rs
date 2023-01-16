@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 
-use crate::{units::tank::SpawnTankEvent, GameState};
+use crate::{
+    units::{tank::SpawnTankEvent, units::SpawnUnitEvent},
+    GameState,
+};
 
 pub struct InputPlugin;
 
@@ -15,15 +18,19 @@ impl Plugin for InputPlugin {
 // fn menu_controls
 
 // fn gameplay controls
-fn gameplay_controls(keyboard: Res<Input<KeyCode>>, mut ev_spawntank: EventWriter<SpawnTankEvent>) {
+fn gameplay_controls(
+    keyboard: Res<Input<KeyCode>>,
+    mut ev_spawntank: EventWriter<SpawnTankEvent>,
+    mut ev_spawnunit: EventWriter<SpawnUnitEvent>,
+) {
     if keyboard.just_pressed(KeyCode::Space) {
-        ev_spawntank.send(SpawnTankEvent {
-            is_player: true,
-            position: Vec3 {
-                x: 0.0,
-                y: 0.0,
-                z: 0.0,
-            },
-        });
+        // ev_spawntank.send(SpawnTankEvent {
+        //     is_player: true,
+        //     position: Vec3 {
+        //         x: 0.0,
+        //         y: 0.0,
+        //         z: 0.0,
+        //     },
+        // });
     }
 }

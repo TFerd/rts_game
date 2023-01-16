@@ -1,7 +1,8 @@
-use bevy::prelude::*;
+use crate::{player::Player, units::units::SpawnUnitEvent, *};
+
 use bevy_mod_picking::PickableBundle;
 
-use crate::{utils::Health, GameState};
+use crate::{units::tank::SpawnTankEvent, utils::Health, GameState};
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
 pub struct Base;
@@ -29,17 +30,23 @@ impl Plugin for BasePlugin {
             .add_system_set(
                 SystemSet::on_update(GameState::Gameplay)
                     .with_system(base_death)
-                    .with_system(build_base),
+                    .with_system(build_base)
+                    .with_system(train_tank),
             );
     }
 }
 
-fn base_death(bases: Query<&Health, With<Base>>, mut base_death_ew: EventWriter<BaseDeathEvent>) {
-    for health in bases.iter() {
+fn base_death(
+    mut commands: Commands,
+    bases: Query<(Entity, &Health), With<Base>>,
+    mut base_death_ew: EventWriter<BaseDeathEvent>,
+) {
+    for (entity, health) in bases.iter() {
         if health.0 <= 0.0 {
             // base destroyed
             // gameover?
             base_death_ew.send(BaseDeathEvent);
+            commands.entity(entity).despawn_recursive();
 
             // play death animation
         }
@@ -82,6 +89,42 @@ pub fn build_base(
     }
 }
 
+// @TODO: make this general?
+fn train_tank(
+    mut ev_spawnunit: EventWriter<SpawnUnitEvent>,
+    query: Query<(&Selection, &Transform), With<Base>>,
+    mut player: Query<&mut Player>,
+    keyboard: Res<Input<KeyCode>>,
+) {
+    let mut player = player
+        .get_single_mut()
+        .expect("Could not find ONE player only!");
+
+    if keyboard.just_pressed(KeyCode::Space) {
+        for (selection, transform) in &query {
+            if player.money >= 100 {
+                if selection.selected() {
+                    ev_spawnunit.send(SpawnUnitEvent {
+                        is_player: true,
+                        position: transform.translation
+                            - Vec3 {
+                                x: 0.0,
+                                y: 0.0,
+                                z: -5.0,
+                            },
+                        unit_type: units::units::UnitType::Tank,
+                    });
+
+                    player.money = player.money - 100;
+                }
+            }
+        }
+    }
+}
+
+fn train_miner() {
+    todo!();
+}
 // @TODO: use this when we have assets?
 // pub fn spawn_base_entity(
 //     commands: &mut Commands,
