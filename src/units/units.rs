@@ -50,6 +50,7 @@ pub struct UnitBundle {
 #[reflect(Component)]
 pub struct Speed(pub u32);
 
+// should i make all of these send out events? no? idk lots of extra code
 fn spawn_unit(
     mut commands: Commands,
     mut ev_spawnunit: EventReader<SpawnUnitEvent>,
@@ -74,7 +75,7 @@ fn spawn_unit(
                     .insert(UnitBundle {
                         health: Health(5.0),
                         range: Range(8),
-                        atk_cd: AttackCooldown,
+                        atk_cd: AttackCooldown(Timer::from_seconds(1.5, TimerMode::Repeating)),
                     })
                     .insert(Tank)
                     .insert(Name::new("Tank".to_string()));

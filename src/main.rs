@@ -21,7 +21,7 @@ pub use gamestates::*;
 pub use levels::sandbox_lvl::*;
 use player::PlayerPlugin;
 use units::units::UnitsPluginGroup;
-use utils::UtilPluginGroup;
+use utils::UtilsPlugin;
 
 fn main() {
     App::new()
@@ -45,6 +45,6 @@ fn main() {
         //.add_plugin(InputPlugin)
         .add_plugins(BuildingsPluginGroup)
         .add_plugins(UnitsPluginGroup)
-        .add_plugins(UtilPluginGroup)
+        .add_plugin(UtilsPlugin)
         .run();
 }

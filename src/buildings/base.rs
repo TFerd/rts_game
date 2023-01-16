@@ -2,7 +2,7 @@ use crate::{player::Player, units::units::SpawnUnitEvent, *};
 
 use bevy_mod_picking::PickableBundle;
 
-use crate::{units::tank::SpawnTankEvent, utils::Health, GameState};
+use crate::{utils::Health, GameState};
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
 pub struct Base;
