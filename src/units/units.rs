@@ -26,6 +26,9 @@ impl Plugin for UnitsPlugin {
     }
 }
 
+#[derive(Component)]
+pub struct Unit;
+
 pub struct SpawnUnitEvent {
     pub is_player: bool,
     pub position: Vec3,

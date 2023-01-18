@@ -57,15 +57,12 @@ fn aquire_target(
     targets: Query<(Entity, &GlobalTransform), With<Health>>, // @TODO: With<EnemyOwned>
 ) {
     for (shooter_ent, range, shooter_transform) in shooters.iter() {
-        let closest_enemy = targets
-            .iter()
-            .min_by_key(|closest_transform| {
-                FloatOrd(Vec3::distance(
-                    shooter_transform.translation(),
-                    closest_transform.1.translation(),
-                ))
-            })
-            .map(|target_in_range| target_in_range); //@TODO: dont think i need this?
+        let closest_enemy = targets.iter().min_by_key(|closest_transform| {
+            FloatOrd(Vec3::distance(
+                shooter_transform.translation(),
+                closest_transform.1.translation(),
+            ))
+        }); //@TODO: dont think i need this?
 
         if let Some(closest_enemy) = closest_enemy {
             let distance = Vec3::distance(

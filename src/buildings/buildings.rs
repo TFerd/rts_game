@@ -8,3 +8,6 @@ impl PluginGroup for BuildingsPluginGroup {
         PluginGroupBuilder::start::<Self>().add(BasePlugin)
     }
 }
+
+#[derive(Component)]
+pub struct Building;
