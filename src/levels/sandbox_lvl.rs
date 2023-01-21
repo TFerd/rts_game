@@ -3,7 +3,7 @@ use bevy_mod_picking::*;
 
 use crate::{
     buildings::base::{Base, BaseBundle},
-    utils::Health,
+    utils::{EnemyOwned, Health, PlayerOwned},
     GameState,
 };
 
@@ -42,6 +42,7 @@ fn spawn_scene(
             building_type: Base,
             health: Health(10.0),
         })
+        .insert(PlayerOwned)
         .insert(PickableBundle::default())
         .insert(Name::new("Player Base".to_string()));
 
@@ -57,6 +58,7 @@ fn spawn_scene(
             building_type: Base,
             health: Health(10.0),
         })
+        .insert(EnemyOwned)
         .insert(PickableBundle::default())
         .insert(Name::new("Enemy Base".to_string()));
 

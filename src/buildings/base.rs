@@ -1,4 +1,8 @@
-use crate::{player::Player, units::units::SpawnUnitEvent, *};
+use crate::{
+    player::Player,
+    units::{events::SpawnUnitEvent, unit_types::UnitType},
+    *,
+};
 
 use bevy_mod_picking::PickableBundle;
 
@@ -112,11 +116,28 @@ fn train_tank(
                                 y: 0.0,
                                 z: -5.0,
                             },
-                        unit_type: units::units::UnitType::Tank,
+                        unit_type: UnitType::Tank,
                     });
 
                     player.money = player.money - 100;
                 }
+            }
+        }
+    }
+
+    if keyboard.just_pressed(KeyCode::E) {
+        for (selection, transform) in &query {
+            if selection.selected() {
+                ev_spawnunit.send(SpawnUnitEvent {
+                    is_player: false,
+                    position: transform.translation
+                        - Vec3 {
+                            x: 3.0,
+                            y: 0.0,
+                            z: 5.0,
+                        },
+                    unit_type: UnitType::Tank,
+                });
             }
         }
     }
