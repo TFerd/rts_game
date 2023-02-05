@@ -11,3 +11,6 @@ impl PluginGroup for BuildingsPluginGroup {
 
 #[derive(Component)]
 pub struct Building;
+
+#[derive(Component)]
+pub struct TrainingQueue;

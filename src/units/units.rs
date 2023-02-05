@@ -49,6 +49,7 @@ pub struct UnitBundle {
     atk_cd: AttackCooldown,
     damage: Damage,
     unit_type: UnitType,
+    // @TODO: unit_flag: Unit,
 }
 
 #[derive(Component, Reflect, Default)]
@@ -80,6 +81,7 @@ fn spawn_unit(
 
         // add common stuff here, like maybe stuff passed in from event
         // ok turns out like nothing is common
+        // maybe make stuff from a config file
         match ev.unit_type {
             UnitType::Tank => {
                 info!("Spawning tank.");
@@ -87,9 +89,9 @@ fn spawn_unit(
                     .spawn(PbrBundle {
                         mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),
                         material: materials.add(if ev.is_player {
-                            Color::rgb(0.9, 0.3, 0.3).into()
-                        } else {
                             Color::rgb(0.3, 0.3, 0.9).into()
+                        } else {
+                            Color::rgb(0.9, 0.3, 0.3).into()
                         }),
                         transform: Transform::from_translation(ev.position),
                         ..Default::default()

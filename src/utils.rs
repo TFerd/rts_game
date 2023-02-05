@@ -8,6 +8,10 @@ use bevy_inspector_egui::{Inspectable, RegisterInspectable};
 
 use crate::GameState;
 
+/********************
+ * START COMPONENTS
+ ********************/
+
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
 pub struct PlayerOwned;
@@ -36,6 +40,10 @@ pub struct Damage(pub u32);
 #[derive(Component, Inspectable)]
 #[component(storage = "SparseSet")]
 pub struct Target(pub Entity);
+
+/********************
+ *  END COMPONENTS
+ ********************/
 
 pub struct AttackEvent {
     pub target: Entity,

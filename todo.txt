@@ -1,0 +1,15 @@
+add hashmap for config (add more stuff without adding more code)
+
+get started on ui (kayak ui)
+
+make some models for units and buildings
+
+learn particle systems (hanabi)
+
+organize everything
+
+better camera controls
+
+raycast mouseclick <- ADD RAPIER PHYSICS
+
+grid system for buildings
