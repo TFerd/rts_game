@@ -54,7 +54,7 @@ fn camera_controls(
 
     let mut pan = Vec2::ZERO;
 
-    if mouse_input.pressed(MouseButton::Right) {
+    if mouse_input.pressed(MouseButton::Middle) {
         for ev in ev_mouse_motion.iter() {
             pan += ev.delta;
             info!("Pan: {:?}", pan);

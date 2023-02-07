@@ -10,6 +10,8 @@ organize everything
 
 better camera controls
 
-raycast mouseclick <- ADD RAPIER PHYSICS
+raycast mouseclick <- ADD RAPIER PHYSICS <- only add physics to entities when they die i think
 
 grid system for buildings
+
+beyv_prototype_lyon for drawing lines (unit paths?)

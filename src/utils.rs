@@ -119,21 +119,17 @@ fn aquire_target(
 // if target moves out of range, remove the target
 // @TODO: maybe remove the world param and do the same thing as apply_damage for getting entity
 fn remove_target(
-    world: &World,
     mut commands: Commands,
-    query: Query<(Entity, &Target, &GlobalTransform, &Range), With<PlayerOwned>>,
+    query: Query<(Entity, &Target, &GlobalTransform, &Range), With<PlayerOwned>>, // @TODO: make this work for enemies too
+    targets: Query<&GlobalTransform>,
 ) {
     for (shooter_ent, target, shooter_transform, shooter_range) in query.iter() {
-        let target_ent = world.get_entity(target.0);
+        let target_ent = targets.get(target.0);
 
         match target_ent {
-            Some(ent) => {
-                let target_transform = ent.get::<GlobalTransform>().unwrap();
-
+            Ok(ent) => {
                 // calculate if in range
-                let distance = shooter_transform
-                    .translation()
-                    .distance(target_transform.translation());
+                let distance = shooter_transform.translation().distance(ent.translation());
 
                 if distance > shooter_range.0 as f32 {
                     // de-target
@@ -141,8 +137,9 @@ fn remove_target(
                     info!("Removing target from {:?}", shooter_ent);
                 }
             }
-            None => {
-                warn!("Entity not found, removing Target component...");
+            Err(e) => {
+                warn!("Error in remove_target, {:?}", e);
+                info!("Removing target...");
                 commands.entity(shooter_ent).remove::<Target>();
             }
         }
@@ -152,9 +149,10 @@ fn remove_target(
 // for entities with a target, shoot them
 fn attack_target(
     mut ev_attack: EventWriter<AttackEvent>,
-    mut query: Query<(&Damage, &Target, &mut AttackCooldown)>,
+    mut query: Query<(&Damage, &Target, &mut AttackCooldown, &mut Transform)>,
+    targets_query: Query<&GlobalTransform>, // list of all transforms, we will get the targets in the system
 ) {
-    for (damage, target, mut atk_cd) in query.iter_mut() {
+    for (damage, target, mut atk_cd, mut transform) in query.iter_mut() {
         debug!("hello");
         if atk_cd.0.finished() {
             info!("Attacking..");
@@ -163,6 +161,24 @@ fn attack_target(
                 damage: damage.0,
             });
             atk_cd.0.reset();
+
+            let target = targets_query.get(target.0);
+            match target {
+                Ok(target) => {
+                    transform.look_at(target.translation(), Vec3::Y);
+                    // @TODO: attack animation
+                }
+                Err(e) => {
+                    match e {
+                        // @TODO do more with this error stuff?
+                        bevy::ecs::query::QueryEntityError::QueryDoesNotMatch(_) => todo!(),
+                        bevy::ecs::query::QueryEntityError::NoSuchEntity(_) => todo!(),
+                        bevy::ecs::query::QueryEntityError::AliasedMutability(_) => {
+                            error!("Aliased Mut!")
+                        }
+                    }
+                }
+            }
         }
     }
 }

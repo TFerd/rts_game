@@ -1,5 +1,6 @@
 use bevy::{app::PluginGroupBuilder, prelude::*};
 use bevy_inspector_egui::{Inspectable, RegisterInspectable};
+use bevy_rapier3d::prelude::{Collider, Restitution, RigidBody};
 
 use crate::{
     units::tank::Tank,
@@ -50,6 +51,7 @@ pub struct UnitBundle {
     damage: Damage,
     unit_type: UnitType,
     // @TODO: unit_flag: Unit,
+    speed: Speed,
 }
 
 #[derive(Component, Reflect, Default)]
@@ -102,6 +104,7 @@ fn spawn_unit(
                         atk_cd: AttackCooldown(Timer::from_seconds(1.5, TimerMode::Once)),
                         damage: Damage(2),
                         unit_type: UnitType::Tank,
+                        speed: Speed(5),
                     })
                     .insert(Tank)
                     .insert(Name::new("Tank".to_string()))

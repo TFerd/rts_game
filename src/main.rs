@@ -19,7 +19,7 @@ mod utils;
 use buildings::buildings::BuildingsPluginGroup;
 pub use camera::*;
 pub use gamestates::*;
-// use input_handling::InputPlugin;
+use input_handling::InputPlugin;
 pub use maps::sandbox_map::*;
 use player::PlayerPlugin;
 use units::units::UnitsPluginGroup;
@@ -44,7 +44,7 @@ fn main() {
         .add_plugin(SandboxMapPlugin)
         .add_plugin(CameraPlugin)
         .add_plugin(PlayerPlugin)
-        //.add_plugin(InputPlugin)
+        .add_plugin(InputPlugin)
         .add_plugins(BuildingsPluginGroup)
         .add_plugins(UnitsPluginGroup)
         .add_plugin(UtilsPlugin)
