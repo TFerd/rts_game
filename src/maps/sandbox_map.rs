@@ -21,21 +21,21 @@ fn spawn_scene(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    let selected_collider_color = materials.add(Color::rgba(0.3, 0.9, 0.3, 0.9).into());
+    //let selected_collider_color = materials.add(Color::rgba(0.3, 0.9, 0.3, 0.9).into());
 
     commands
         .spawn(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Plane { size: 65.0 })),
+            mesh: meshes.add(Mesh::from(shape::Plane { size: 70.0 })),
             material: materials.add(Color::rgb(0.1, 0.8, 0.1).into()),
             ..Default::default()
         })
-        .insert(Collider::cuboid(6.50, 0.1, 6.0))
+        .insert(Collider::cuboid(35.0, 0.1, 35.0))
         .insert(Name::new("Ground".to_string()));
 
     // player base
     commands
         .spawn(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Cube { size: 2.0 })),
+            mesh: meshes.add(Mesh::from(shape::Cube { size: 5.0 })),
             material: materials.add(Color::BLUE.into()),
             transform: Transform::from_xyz(-25.0, 1.0, 25.0),
             ..Default::default()
@@ -45,13 +45,14 @@ fn spawn_scene(
             health: Health(10.0),
         })
         .insert(PlayerOwned)
-        .insert(PickableBundle::default())
+        //.insert(PickableBundle::default())
+        .insert(Collider::cuboid(2.5, 2.5, 2.5))
         .insert(Name::new("Player Base".to_string()));
 
     // enemy base
     commands
         .spawn(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Cube { size: 2.0 })),
+            mesh: meshes.add(Mesh::from(shape::Cube { size: 5.0 })),
             material: materials.add(Color::RED.into()),
             transform: Transform::from_xyz(25.0, 1.0, -25.0),
             ..Default::default()
@@ -61,7 +62,8 @@ fn spawn_scene(
             health: Health(10.0),
         })
         .insert(EnemyOwned)
-        .insert(PickableBundle::default())
+        //.insert(PickableBundle::default())
+        .insert(Collider::cuboid(2.5, 2.5, 2.5))
         .insert(Name::new("Enemy Base".to_string()));
 
     // @TODO: add sun

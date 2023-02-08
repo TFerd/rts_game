@@ -16,7 +16,7 @@ mod player;
 mod units;
 mod utils;
 
-use buildings::buildings::BuildingsPluginGroup;
+use buildings::{building_grid::BuildingGridPlugin, buildings::BuildingsPluginGroup};
 pub use camera::*;
 pub use gamestates::*;
 use input_handling::InputPlugin;
@@ -48,6 +48,7 @@ fn main() {
         .add_plugins(BuildingsPluginGroup)
         .add_plugins(UnitsPluginGroup)
         .add_plugin(UtilsPlugin)
+        .add_plugin(BuildingGridPlugin)
         //.add_plugin(RapierDebugRenderPlugin)
         .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
         .add_plugin(RapierDebugRenderPlugin::default())
