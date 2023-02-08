@@ -54,9 +54,7 @@ fn handle_grid(grid: Query<&BuildingGrid>, keyboard: Res<Input<KeyCode>>) {
         let grid = grid.get_single();
 
         match grid {
-            Ok(grid) => grid.grid.iter().for_each(|x| {
-                info!("{:#?}", x);
-            }),
+            Ok(grid) => print_grid(grid),
             Err(_) => {
                 error!("wt....f...");
             }
@@ -77,4 +75,16 @@ fn init_grid(commands: &mut Commands, size: usize) {
     commands.spawn(BuildingGrid::new(size));
 }
 
-fn print_grid(grid: BuildingGrid) {}
+// @TODO: rewrite how we print this
+fn print_grid(grid: &BuildingGrid) {
+    grid.grid.iter().for_each(|x| {
+        println!();
+        x.iter().for_each(|y| {
+            if y.available {
+                print!(" O ");
+            } else {
+                print!(" X ");
+            }
+        });
+    });
+}
