@@ -1,5 +1,5 @@
-use bevy::prelude::*;
-use bevy_inspector_egui::egui::Grid;
+use bevy::{prelude::*, reflect};
+use bevy_inspector_egui::{egui::Grid, Inspectable};
 
 use crate::{player::Player, GameState};
 
@@ -17,7 +17,8 @@ impl Plugin for BuildingGridPlugin {
     }
 }
 
-#[derive(Component, Debug)]
+#[derive(Component)]
+//#[reflect(Component)]
 pub struct BuildingGrid {
     grid: Vec<Vec<GridSquare>>,
 }
@@ -50,41 +51,55 @@ pub struct GridSquare {
 }
 
 fn handle_grid(grid: Query<&BuildingGrid>, keyboard: Res<Input<KeyCode>>) {
-    if keyboard.just_pressed(KeyCode::F1) {
-        let grid = grid.get_single();
+    // if keyboard.just_pressed(KeyCode::F1) {
+    //     let grid = grid.get_single();
 
-        match grid {
-            Ok(grid) => print_grid(grid),
-            Err(_) => {
-                error!("wt....f...");
-            }
-        }
-    }
+    //     match grid {
+    //         Ok(grid) => print_grid(grid),
+    //         Err(e) => {
+    //             //error!("BuildingGrid not found!");
+
+    //             error!("{:?}", e);
+    //         }
+    //     }
+    // }
 }
 
+// @TODO: get ground size and pass to the function helper
+// @TODO: rename this to be like post-init or something
 fn init_grid_system(mut commands: Commands) {
     info!("initting grid..");
     init_grid(&mut commands, 5);
-    info!("Hit F1 to print the grid!");
 }
 
 // maybe not init system? maybe just a function?
 // but i need to query for the grid?
 // unless i pass as a parameter duh
 fn init_grid(commands: &mut Commands, size: usize) {
-    commands.spawn(BuildingGrid::new(size));
+    let grid = commands
+        .spawn((BuildingGrid::new(size), Name::new("Grid".to_string())))
+        .id();
+
+    // create entities
+    // or draw lines
 }
 
 // @TODO: rewrite how we print this
 fn print_grid(grid: &BuildingGrid) {
+    let mut output = String::new();
+
     grid.grid.iter().for_each(|x| {
-        println!();
+        output.push_str("\n");
         x.iter().for_each(|y| {
             if y.available {
-                print!(" O ");
+                output.push_str(" O ");
             } else {
-                print!(" X ");
+                output.push_str(" X ");
             }
         });
     });
+
+    info!("{}", output);
 }
+
+//on change: jhide

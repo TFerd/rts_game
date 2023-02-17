@@ -5,6 +5,7 @@
 
 use bevy::{prelude::*, utils::FloatOrd};
 use bevy_inspector_egui::{Inspectable, RegisterInspectable};
+use bevy_rapier3d::prelude::{QueryFilter, RapierContext, Real};
 
 use crate::GameState;
 
@@ -117,7 +118,6 @@ fn aquire_target(
 }
 
 // if target moves out of range, remove the target
-// @TODO: maybe remove the world param and do the same thing as apply_damage for getting entity
 fn remove_target(
     mut commands: Commands,
     query: Query<(Entity, &Target, &GlobalTransform, &Range), With<PlayerOwned>>, // @TODO: make this work for enemies too
@@ -205,5 +205,19 @@ fn apply_damage(mut ev_attack: EventReader<AttackEvent>, mut query: Query<&mut H
             target_hp.0 -= ev.damage as f32;
             info!("{:?} took {:?} damage.", ev.target, ev.damage);
         }
+    }
+}
+
+pub fn get_raycast_collision(
+    query_filter: QueryFilter,
+    rapier_context: &RapierContext,
+    camera: &Camera,
+    camera_transform: &GlobalTransform,
+    window: &Window,
+) -> Option<(Entity, Real)> {
+    let ray = camera.viewport_to_world(camera_transform, window.cursor_position().unwrap());
+    match ray {
+        Some(ray) => rapier_context.cast_ray(ray.origin, ray.direction, 500.0, false, query_filter),
+        None => None,
     }
 }

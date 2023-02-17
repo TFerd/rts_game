@@ -9,4 +9,6 @@ pub struct SpawnUnitEvent {
     pub unit_type: UnitType,
 }
 
+pub struct TrainUnitEvent {}
+
 pub struct UnitDeathEvent;

@@ -1,5 +1,5 @@
 use crate::{
-    player::Player,
+    player::{Player, PlayerSelected},
     units::{events::SpawnUnitEvent, unit_types::UnitType},
     *,
 };
@@ -7,6 +7,8 @@ use crate::{
 use bevy_mod_picking::PickableBundle;
 
 use crate::{utils::Health, GameState};
+
+use super::{building_types::BuildingType, buildings::BuildEvent};
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
 pub struct Base;
@@ -93,10 +95,38 @@ pub fn build_base(
     }
 }
 
+fn send_building_events(
+    rapier_context: Res<RapierContext>,
+    mut ev_buildbuilding: EventWriter<BuildEvent>,
+    window: Res<Windows>,
+    keyboard: Res<Input<KeyCode>>,
+    camera: Query<(&Camera, &GlobalTransform), With<Camera3d>>,
+    mut player: Query<&mut Player>,
+    selected: Query<&PlayerSelected>,
+) {
+    let selected = selected.single();
+    let mut player = player
+        .get_single_mut()
+        .expect("Could not find ONE player only!");
+    let (camera, camera_transform) = camera.single();
+    let window = window.get_primary().unwrap();
+    let cursor = window.cursor_position().expect("Cursor not found?");
+    let ray = camera.viewport_to_world(camera_transform, cursor);
+
+    if keyboard.just_pressed(KeyCode::Key1) {
+        // must check if something is there, and if player has money
+        ev_buildbuilding.send(BuildEvent {
+            player: true,
+            building_type: BuildingType::Barracks,
+            position: Vec3::ZERO,
+        })
+    }
+}
+
 // @TODO: make this general?
 fn train_tank(
     mut ev_spawnunit: EventWriter<SpawnUnitEvent>,
-    query: Query<(&Selection, &Transform), With<Base>>,
+    query: Query<(&PlayerSelected, &Transform), With<Base>>,
     mut player: Query<&mut Player>,
     keyboard: Res<Input<KeyCode>>,
 ) {
@@ -105,41 +135,11 @@ fn train_tank(
         .expect("Could not find ONE player only!");
 
     if keyboard.just_pressed(KeyCode::Space) {
-        for (selection, transform) in &query {
-            if player.money >= 100 {
-                if selection.selected() {
-                    ev_spawnunit.send(SpawnUnitEvent {
-                        is_player: true,
-                        position: transform.translation
-                            - Vec3 {
-                                x: 0.0,
-                                y: 0.0,
-                                z: -5.0,
-                            },
-                        unit_type: UnitType::Tank,
-                    });
-
-                    player.money = player.money - 100;
-                }
-            }
-        }
+        info!("Train tank");
     }
 
     if keyboard.just_pressed(KeyCode::E) {
-        for (selection, transform) in &query {
-            if selection.selected() {
-                ev_spawnunit.send(SpawnUnitEvent {
-                    is_player: false,
-                    position: transform.translation
-                        - Vec3 {
-                            x: 3.0,
-                            y: 0.0,
-                            z: 5.0,
-                        },
-                    unit_type: UnitType::Tank,
-                });
-            }
-        }
+        info!("Train enemy tank, debug purposes");
     }
 }
 
@@ -174,3 +174,6 @@ fn train_miner() {
 //         ))
 //         .id()
 // }
+
+// fires off unit training depending on the input
+fn handle_input(keyboard: Res<Input<KeyCode>>) {}

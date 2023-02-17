@@ -3,6 +3,7 @@ use bevy_inspector_egui::{Inspectable, RegisterInspectable};
 use bevy_rapier3d::prelude::{Collider, Restitution, RigidBody};
 
 use crate::{
+    player::PlayerSelected,
     units::tank::Tank,
     utils::{AttackCooldown, Damage, EnemyOwned, Health, PlayerOwned, Range},
     GameState,
@@ -35,23 +36,24 @@ impl Plugin for UnitsPlugin {
             .add_system_set(
                 SystemSet::on_update(GameState::Gameplay)
                     .with_system(spawn_unit)
-                    .with_system(unit_death),
+                    .with_system(unit_death)
+                    .with_system(move_unit),
             );
     }
 }
 
 #[derive(Component)]
-pub struct Unit;
+pub struct Unit; // Marker component
 
 #[derive(Bundle)]
 pub struct UnitBundle {
-    health: Health,
-    range: Range,
-    atk_cd: AttackCooldown,
-    damage: Damage,
-    unit_type: UnitType,
+    pub health: Health,
+    pub range: Range,
+    pub atk_cd: AttackCooldown,
+    pub damage: Damage,
+    pub unit_type: UnitType,
     // @TODO: unit_flag: Unit,
-    speed: Speed,
+    pub speed: Speed,
 }
 
 #[derive(Component, Reflect, Default)]
@@ -61,6 +63,13 @@ pub struct Speed(pub u32);
 #[derive(Component, Inspectable)]
 #[component(storage = "SparseSet")]
 pub struct TargetDestination(pub Vec3); // Position unit wants to move to. NOT the position of their target
+
+// @TODO: this
+#[derive(Component, Reflect, Default)]
+#[reflect(Component)]
+pub struct TrainingUnit {
+    //building: Entity, // building which they will spawn out of
+} // ?
 
 /*************************
         Systems
@@ -130,6 +139,9 @@ fn spawn_unit(
     }
 }
 
+// this should happen before spawn unit
+fn train_unit() {}
+
 // Despawns enemies and sends death event for statistics purposes
 fn unit_death(
     mut commands: Commands,
@@ -141,6 +153,33 @@ fn unit_death(
             // Death
             ev_death.send(UnitDeathEvent);
             commands.entity(entity).despawn_recursive();
+        }
+    }
+}
+
+// @TODO: fix this shit
+fn move_unit(
+    time: Res<Time>,
+    mut commands: Commands,
+    mut query: Query<(
+        Entity,
+        &GlobalTransform,
+        &mut Transform,
+        &TargetDestination,
+        &Speed,
+    )>,
+) {
+    for (entity, global_transform, mut transform, target, speed) in query.iter_mut() {
+        info!(
+            "Distance is: {}",
+            global_transform.translation().distance(target.0)
+        );
+        if global_transform.translation().distance(target.0) < 0.5 {
+            info!("Entity arrived at destination, removing target");
+            commands.entity(entity).remove::<TargetDestination>();
+        } else {
+            let direction = global_transform.translation() - target.0;
+            transform.translation += time.delta_seconds() * speed.0 as f32 * direction.normalize();
         }
     }
 }
