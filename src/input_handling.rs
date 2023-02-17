@@ -5,7 +5,7 @@ use crate::{
     buildings::buildings::{Building, Ground},
     player::PlayerSelected,
     units::units::{TargetDestination, Unit},
-    utils::{get_raycast_collision, Target},
+    utils::{get_raycast_collision, EnemyOwned, Target},
     GameState,
 };
 
@@ -107,9 +107,8 @@ fn unit_movement(
     window: Res<Windows>,
     camera: Query<(&Camera, &GlobalTransform), With<Camera3d>>,
     selected: Query<&PlayerSelected>,
-    units: Query<Entity, With<Unit>>,
     mut commands: Commands,
-    units_and_buildings: Query<Entity, Or<(With<Unit>, With<Building>)>>,
+    units_and_buildings: Query<Entity, (With<EnemyOwned>, Or<(With<Unit>, With<Building>)>)>,
     ground: Query<Entity, With<Ground>>,
 ) {
     let (camera, camera_transform) = camera.single();
@@ -133,7 +132,7 @@ fn unit_movement(
                     for selected_ent in selected.0.iter() {
                         commands
                             .entity(*selected_ent)
-                            .insert(TargetDestination(Vec3::ZERO));
+                            .insert(TargetDestination(ent.1));
                     }
                 } else if let Ok(_) = units_and_buildings.get(ent.0) {
                     // Unit or building selected, make them a target

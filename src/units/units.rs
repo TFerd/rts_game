@@ -178,8 +178,9 @@ fn move_unit(
             info!("Entity arrived at destination, removing target");
             commands.entity(entity).remove::<TargetDestination>();
         } else {
-            let direction = global_transform.translation() - target.0;
-            transform.translation += time.delta_seconds() * speed.0 as f32 * direction.normalize();
+            let mut direction = global_transform.translation() - target.0;
+            direction.y = 0.0;
+            transform.translation -= time.delta_seconds() * speed.0 as f32 * direction.normalize();
         }
     }
 }
