@@ -8,7 +8,7 @@ pub struct Player {
     pub money: u32,
 }
 
-// @TODO: Selected units, as the
+// TODO: Selected units, as the
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
 pub struct PlayerSelected(pub HashSet<Entity>);

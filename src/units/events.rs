@@ -1,4 +1,4 @@
-// @TODO: class
+// TODO: class
 use bevy::prelude::*;
 
 use super::unit_types::UnitType;

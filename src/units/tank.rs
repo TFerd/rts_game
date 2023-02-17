@@ -18,7 +18,7 @@ pub struct Tank;
 //     pub damage: Damage,
 // }
 
-// @TODO: make a general spawn unit event?
+// TODO: make a general spawn unit event?
 // pub struct SpawnTankEvent {
 //     pub is_player: bool,
 //     pub position: Vec3,

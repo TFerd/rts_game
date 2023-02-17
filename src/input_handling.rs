@@ -26,7 +26,7 @@ impl Plugin for InputPlugin {
     }
 }
 
-// @TODO: have one main function that calls other functions based on input | idk if we can do that bc other functions cant query on their own
+// TODO: have one main function that calls other functions based on input | idk if we can do that bc other functions cant query on their own
 
 // // fn menu_controls
 
@@ -49,7 +49,7 @@ impl Plugin for InputPlugin {
 //     }
 // }
 
-// @TODO: handle clicks,
+// TODO: handle clicks,
 fn unit_selection(
     ground: Query<Entity, With<Ground>>,
     rapier_context: Res<RapierContext>,
@@ -59,7 +59,7 @@ fn unit_selection(
     keyboard: Res<Input<KeyCode>>,
     mut selected: Query<&mut PlayerSelected>,
 ) {
-    // @TODO: will have to account for click and hold/drag
+    // TODO: will have to account for click and hold/drag
     if mouse.just_released(MouseButton::Left) {
         let (camera, camera_transform) = camera.single();
 
@@ -76,12 +76,13 @@ fn unit_selection(
             Some(ent) => {
                 let mut selected = selected.single_mut();
 
+                info!("Clicked? {:?} | {:?}", ent.0, ent.1);
+
                 if let Ok(_) = ground.get(ent.0) {
                     info!("Ground selected, clearing selection...");
                     selected.0.clear();
                 } else {
                     if keyboard.pressed(KeyCode::LShift) {
-                        info!("Clicked? {:?} | {:?}", ent.0, ent.1);
                         selected.0.insert(ent.0);
                         info!("Inserted entity into selected HashSet...");
                         info!("HashSet is now: {:?}", selected.0);
@@ -128,7 +129,7 @@ fn unit_movement(
         match collision {
             Some(ent) => {
                 if let Ok(_) = ground.get(ent.0) {
-                    // Ground selected // @TODO: need to get transform of where they clicked
+                    // Ground selected // TODO: need to get transform of where they clicked
                     for selected_ent in selected.0.iter() {
                         commands
                             .entity(*selected_ent)
@@ -150,7 +151,7 @@ fn unit_movement(
 
         // check the entity type of collision: building, unit, or ground
 
-        // @TODO: pathfind
+        // TODO: pathfind
     }
 }
 
@@ -158,7 +159,7 @@ fn clear_selected(keyboard: Res<Input<KeyCode>>, mut selected: Query<&mut Player
     if keyboard.just_pressed(KeyCode::Escape) {
         let mut selected = selected.single_mut();
         if selected.0.is_empty() {
-            // @TODO: open pause menu
+            // TODO: open pause menu
         } else {
             selected.0.clear();
             info!("Cleared Selected HashSet");

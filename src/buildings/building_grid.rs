@@ -5,7 +5,7 @@ use crate::{player::Player, GameState};
 
 pub struct BuildingGridPlugin;
 
-// @TODO: need to do stuff like 'after loading the level, apply the grid'
+// TODO: need to do stuff like 'after loading the level, apply the grid'
 impl Plugin for BuildingGridPlugin {
     fn build(&self, app: &mut App) {
         app.add_system_set(
@@ -65,8 +65,8 @@ fn handle_grid(grid: Query<&BuildingGrid>, keyboard: Res<Input<KeyCode>>) {
     // }
 }
 
-// @TODO: get ground size and pass to the function helper
-// @TODO: rename this to be like post-init or something
+// TODO: get ground size and pass to the function helper
+// TODO: rename this to be like post-init or something
 fn init_grid_system(mut commands: Commands) {
     info!("initting grid..");
     init_grid(&mut commands, 5);
@@ -84,7 +84,7 @@ fn init_grid(commands: &mut Commands, size: usize) {
     // or draw lines
 }
 
-// @TODO: rewrite how we print this
+// TODO: rewrite how we print this
 fn print_grid(grid: &BuildingGrid) {
     let mut output = String::new();
 

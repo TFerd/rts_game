@@ -34,7 +34,7 @@ fn spawn_camera(mut commands: Commands) {
         });
 }
 
-// @TODO: add keybinds from settings
+// TODO: add keybinds from settings
 fn camera_controls(
     mut camera_q: Query<(&mut Transform, &mut CameraMovement), With<Camera3d>>,
     time: Res<Time>,

@@ -36,7 +36,7 @@ pub struct BuildEvent {
     pub position: Vec3,
 }
 
-// @TODO
+// TODO
 fn build_buildings(mut ev_build: EventReader<BuildEvent>, mut commands: Commands) {
     for ev in ev_build.iter() {
         // create building at location

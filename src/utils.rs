@@ -1,6 +1,6 @@
 /*
     THIS CLASS IS FOR COMPONENTS/SYSTEMS THAT CAN BE SHARED BETWEEN BUILDINGS AND UNITS
-    @TODO: rename to globals.rs or global.rs ?
+    TODO: rename to globals.rs or global.rs ?
 */
 
 use bevy::{prelude::*, utils::FloatOrd};
@@ -85,11 +85,11 @@ fn tick_timers(mut timers: Query<&mut AttackCooldown>, time: Res<Time>) {
 // find closest target in range
 // maybe need to add With<PlayerOwned>, or maybe not so enemies can use this too
 // still would need two diff teams components to tell who enemies are
-// @TODO: make this have less calculations, (try to capture and reuse values)
+// TODO: make this have less calculations, (try to capture and reuse values)
 fn aquire_target(
     mut commands: Commands,
-    shooters: Query<(Entity, &Range, &GlobalTransform), (Without<Target>, With<PlayerOwned>)>, // @TODO: Make this work for both enemy and player
-    targets: Query<(Entity, &GlobalTransform), (With<Health>, With<EnemyOwned>)>, // @TODO: With<EnemyOwned>
+    shooters: Query<(Entity, &Range, &GlobalTransform), (Without<Target>, With<PlayerOwned>)>, // TODO: Make this work for both enemy and player
+    targets: Query<(Entity, &GlobalTransform), (With<Health>, With<EnemyOwned>)>, // TODO: With<EnemyOwned>
 ) {
     for (shooter_ent, range, shooter_transform) in shooters.iter() {
         let closest_enemy = targets.iter().min_by_key(|closest_transform| {
@@ -97,7 +97,7 @@ fn aquire_target(
                 shooter_transform.translation(),
                 closest_transform.1.translation(),
             ))
-        }); //@TODO: dont think i need this?
+        }); //TODO: dont think i need this?
 
         if let Some(closest_enemy) = closest_enemy {
             let distance = Vec3::distance(
@@ -120,7 +120,7 @@ fn aquire_target(
 // if target moves out of range, remove the target
 fn remove_target(
     mut commands: Commands,
-    query: Query<(Entity, &Target, &GlobalTransform, &Range), With<PlayerOwned>>, // @TODO: make this work for enemies too
+    query: Query<(Entity, &Target, &GlobalTransform, &Range), With<PlayerOwned>>, // TODO: make this work for enemies too
     targets: Query<&GlobalTransform>,
 ) {
     for (shooter_ent, target, shooter_transform, shooter_range) in query.iter() {
@@ -166,11 +166,11 @@ fn attack_target(
             match target {
                 Ok(target) => {
                     transform.look_at(target.translation(), Vec3::Y);
-                    // @TODO: attack animation
+                    // TODO: attack animation
                 }
                 Err(e) => {
                     match e {
-                        // @TODO do more with this error stuff?
+                        // TODO do more with this error stuff?
                         bevy::ecs::query::QueryEntityError::QueryDoesNotMatch(_) => todo!(),
                         bevy::ecs::query::QueryEntityError::NoSuchEntity(_) => todo!(),
                         bevy::ecs::query::QueryEntityError::AliasedMutability(_) => {
@@ -183,22 +183,6 @@ fn attack_target(
     }
 }
 
-// reads attack events and applies damage
-// fn apply_damage(world: &World, mut ev_attack: EventReader<AttackEvent>) {
-//     for ev in ev_attack.iter() {
-//         // dmg
-//         let target = world.get_entity_mut(ev.target);
-
-//         match target {
-//             Some(mut target) => {
-//                 info!("Doing {:?} damage to entity: {:?}", ev.damage, ev.target);
-//                 let mut target_hp = target.get_mut::<Health>().unwrap();
-//                 target_hp.0 -= ev.damage as f32;
-//             }
-//             None => warn!("apply_damage: Entity not found!"),
-//         }
-//     }
-// }
 fn apply_damage(mut ev_attack: EventReader<AttackEvent>, mut query: Query<&mut Health>) {
     for ev in ev_attack.iter() {
         if let Ok(mut target_hp) = query.get_mut(ev.target) {
@@ -208,16 +192,27 @@ fn apply_damage(mut ev_attack: EventReader<AttackEvent>, mut query: Query<&mut H
     }
 }
 
+/// Returns entity and Vec3 of collision.
+
 pub fn get_raycast_collision(
     query_filter: QueryFilter,
     rapier_context: &RapierContext,
     camera: &Camera,
     camera_transform: &GlobalTransform,
     window: &Window,
-) -> Option<(Entity, Real)> {
+) -> Option<(Entity, Vec3)> {
     let ray = camera.viewport_to_world(camera_transform, window.cursor_position().unwrap());
     match ray {
-        Some(ray) => rapier_context.cast_ray(ray.origin, ray.direction, 500.0, false, query_filter),
+        Some(ray) => {
+            if let Some((entity, toi)) =
+                rapier_context.cast_ray(ray.origin, ray.direction, 500.0, false, query_filter)
+            {
+                let point = ray.origin + ray.direction * toi;
+                Some((entity, point))
+            } else {
+                None
+            }
+        }
         None => None,
     }
 }

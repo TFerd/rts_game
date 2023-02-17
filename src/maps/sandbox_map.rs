@@ -104,7 +104,7 @@ fn spawn_scene(
         .insert(Collider::cuboid(0.5, 0.5, 0.5))
         .insert(Unit);
 
-    // @TODO: add sun
+    // TODO: add sun
     commands.spawn(PointLightBundle {
         point_light: PointLight {
             intensity: (1500.0),

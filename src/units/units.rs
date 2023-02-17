@@ -52,7 +52,7 @@ pub struct UnitBundle {
     pub atk_cd: AttackCooldown,
     pub damage: Damage,
     pub unit_type: UnitType,
-    // @TODO: unit_flag: Unit,
+    // TODO: unit_flag: Unit,
     pub speed: Speed,
 }
 
@@ -64,7 +64,7 @@ pub struct Speed(pub u32);
 #[component(storage = "SparseSet")]
 pub struct TargetDestination(pub Vec3); // Position unit wants to move to. NOT the position of their target
 
-// @TODO: this
+// TODO: this
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
 pub struct TrainingUnit {
@@ -82,7 +82,7 @@ fn spawn_unit(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    // @TODO: can write less code here
+    // TODO: can write less code here
     for ev in ev_spawnunit.iter() {
         // let unit = commands.spawn(blah blah);
         // match unit_type {
@@ -157,7 +157,7 @@ fn unit_death(
     }
 }
 
-// @TODO: fix this shit
+// TODO: fix this shit
 fn move_unit(
     time: Res<Time>,
     mut commands: Commands,

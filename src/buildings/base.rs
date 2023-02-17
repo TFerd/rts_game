@@ -123,7 +123,7 @@ fn send_building_events(
     }
 }
 
-// @TODO: make this general?
+// TODO: make this general?
 fn train_tank(
     mut ev_spawnunit: EventWriter<SpawnUnitEvent>,
     query: Query<(&PlayerSelected, &Transform), With<Base>>,
@@ -146,7 +146,7 @@ fn train_tank(
 fn train_miner() {
     todo!();
 }
-// @TODO: use this when we have assets?
+// TODO: use this when we have assets?
 // pub fn spawn_base_entity(
 //     commands: &mut Commands,
 //     mut meshes: ResMut<Assets<Mesh>>,
