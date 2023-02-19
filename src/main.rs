@@ -16,13 +16,13 @@ mod player;
 mod units;
 mod utils;
 
-use buildings::{building_grid::BuildingGridPlugin, buildings::BuildingsPluginGroup};
+use buildings::{building_grid::BuildingGridPlugin, common::BuildingsPluginGroup};
 pub use camera::*;
 pub use gamestates::*;
 use input_handling::InputPlugin;
 pub use maps::sandbox_map::*;
 use player::PlayerPlugin;
-use units::units::UnitsPluginGroup;
+use units::common::UnitsPluginGroup;
 use utils::UtilsPlugin;
 
 fn main() {

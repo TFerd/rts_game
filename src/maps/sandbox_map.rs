@@ -5,12 +5,12 @@ use bevy_rapier3d::prelude::*;
 use crate::{
     buildings::{
         base::{Base, BaseBundle},
-        buildings::Ground,
+        common::Ground,
     },
     units::{
+        common::{Speed, Unit, UnitBundle},
         tank::Tank,
         unit_types::UnitType,
-        units::{Speed, Unit, UnitBundle},
     },
     utils::{AttackCooldown, Damage, EnemyOwned, Health, PlayerOwned, Range},
     GameState,

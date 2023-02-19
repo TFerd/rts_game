@@ -8,7 +8,7 @@ use bevy_mod_picking::PickableBundle;
 
 use crate::{utils::Health, GameState};
 
-use super::{building_types::BuildingType, buildings::BuildEvent};
+use super::{building_types::BuildingType, events::BuildEvent};
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
 pub struct Base;

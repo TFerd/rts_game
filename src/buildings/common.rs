@@ -1,4 +1,4 @@
-use super::{base::BasePlugin, building_types::BuildingType};
+use super::{base::BasePlugin, building_types::BuildingType, events::BuildEvent};
 use bevy::{app::PluginGroupBuilder, prelude::*};
 
 pub struct BuildingsPluginGroup;
@@ -29,12 +29,6 @@ pub struct Building; // Marker component
 
 #[derive(Component)]
 pub struct TrainingQueue;
-
-pub struct BuildEvent {
-    pub player: bool,
-    pub building_type: BuildingType,
-    pub position: Vec3,
-}
 
 // TODO
 fn build_buildings(mut ev_build: EventReader<BuildEvent>, mut commands: Commands) {
