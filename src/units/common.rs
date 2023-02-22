@@ -3,15 +3,13 @@ use bevy_inspector_egui::{Inspectable, RegisterInspectable};
 use bevy_rapier3d::prelude::{Collider, Restitution, RigidBody};
 
 use crate::{
+    common::{AttackCooldown, Damage, EnemyOwned, Health, PlayerOwned, Range},
     player::PlayerSelected,
-    units::tank::Tank,
-    utils::{AttackCooldown, Damage, EnemyOwned, Health, PlayerOwned, Range},
     GameState,
 };
 
 use super::{
     events::{SpawnUnitEvent, UnitDeathEvent},
-    tank::TankPlugin,
     unit_types::UnitType,
 };
 
@@ -20,9 +18,7 @@ pub struct UnitsPluginGroup;
 
 impl PluginGroup for UnitsPluginGroup {
     fn build(self) -> bevy::app::PluginGroupBuilder {
-        PluginGroupBuilder::start::<Self>()
-            .add(TankPlugin)
-            .add(UnitsPlugin)
+        PluginGroupBuilder::start::<Self>().add(UnitsPlugin)
     }
 }
 
@@ -43,16 +39,16 @@ impl Plugin for UnitsPlugin {
 }
 
 #[derive(Component)]
-pub struct Unit; // Marker component
+pub struct UnitMarker; // Marker component
 
 #[derive(Bundle)]
-pub struct UnitBundle {
+pub struct Unit {
+    // TODO: make this not a bundle
     pub health: Health,
     pub range: Range,
     pub atk_cd: AttackCooldown,
     pub damage: Damage,
     pub unit_type: UnitType,
-    // TODO: unit_flag: Unit,
     pub speed: Speed,
 }
 
@@ -107,7 +103,7 @@ fn spawn_unit(
                         transform: Transform::from_translation(ev.position),
                         ..Default::default()
                     })
-                    .insert(UnitBundle {
+                    .insert(Unit {
                         health: Health(5.0),
                         range: Range(8),
                         atk_cd: AttackCooldown(Timer::from_seconds(1.5, TimerMode::Once)),
@@ -115,7 +111,6 @@ fn spawn_unit(
                         unit_type: UnitType::Tank,
                         speed: Speed(5),
                     })
-                    .insert(Tank)
                     .insert(Name::new("Tank".to_string()))
                     .id();
 

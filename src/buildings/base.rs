@@ -6,7 +6,7 @@ use crate::{
 
 use bevy_mod_picking::PickableBundle;
 
-use crate::{utils::Health, GameState};
+use crate::{common::Health, GameState};
 
 use super::{building_types::BuildingType, events::BuildEvent};
 #[derive(Component, Reflect, Default)]

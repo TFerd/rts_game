@@ -7,12 +7,11 @@ use crate::{
         base::{Base, BaseBundle},
         common::Ground,
     },
+    common::{AttackCooldown, Damage, EnemyOwned, Health, PlayerOwned, Range},
     units::{
-        common::{Speed, Unit, UnitBundle},
-        tank::Tank,
+        common::{Speed, Unit, UnitMarker},
         unit_types::UnitType,
     },
-    utils::{AttackCooldown, Damage, EnemyOwned, Health, PlayerOwned, Range},
     GameState,
 };
 
@@ -90,7 +89,7 @@ fn spawn_scene(
             ),
             ..Default::default()
         })
-        .insert(UnitBundle {
+        .insert(Unit {
             health: Health(5.0),
             range: Range(8),
             atk_cd: AttackCooldown(Timer::from_seconds(1.5, TimerMode::Once)),
@@ -98,11 +97,10 @@ fn spawn_scene(
             unit_type: UnitType::Tank,
             speed: Speed(5),
         })
-        .insert(Tank)
         .insert(Name::new("Tank".to_string()))
         .insert(PlayerOwned)
         .insert(Collider::cuboid(0.5, 0.5, 0.5))
-        .insert(Unit);
+        .insert(UnitMarker);
 
     // TODO: add sun
     commands.spawn(PointLightBundle {

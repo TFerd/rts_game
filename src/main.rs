@@ -9,21 +9,21 @@ pub const WINDOW_HEIGHT: f32 = 750.0;
 
 mod buildings;
 mod camera;
+mod common;
 mod gamestates;
 mod input_handling;
 mod maps;
 mod player;
 mod units;
-mod utils;
 
 use buildings::{building_grid::BuildingGridPlugin, common::BuildingsPluginGroup};
 pub use camera::*;
+use common::UtilsPlugin;
 pub use gamestates::*;
 use input_handling::InputPlugin;
 pub use maps::sandbox_map::*;
 use player::PlayerPlugin;
 use units::common::UnitsPluginGroup;
-use utils::UtilsPlugin;
 
 fn main() {
     App::new()

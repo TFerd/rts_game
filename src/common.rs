@@ -170,7 +170,7 @@ fn attack_target(
                 }
                 Err(e) => {
                     match e {
-                        // TODO do more with this error stuff?
+                        // TODO: do more with this error stuff?
                         bevy::ecs::query::QueryEntityError::QueryDoesNotMatch(_) => todo!(),
                         bevy::ecs::query::QueryEntityError::NoSuchEntity(_) => todo!(),
                         bevy::ecs::query::QueryEntityError::AliasedMutability(_) => {

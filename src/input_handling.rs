@@ -2,10 +2,10 @@ use bevy::prelude::*;
 use bevy_rapier3d::prelude::*;
 
 use crate::{
-    buildings::common::{Building, Ground},
+    buildings::common::{BuildingMarker, Ground},
     player::PlayerSelected,
-    units::common::{TargetDestination, Unit},
-    utils::{get_raycast_collision, EnemyOwned, Target},
+    units::common::{TargetDestination, UnitMarker},
+    common::{get_raycast_collision, EnemyOwned, Target},
     GameState,
 };
 
@@ -27,6 +27,7 @@ impl Plugin for InputPlugin {
 }
 
 // TODO: have one main function that calls other functions based on input | idk if we can do that bc other functions cant query on their own
+// we can because we can use events u fucking idiot
 
 // // fn menu_controls
 
@@ -108,7 +109,13 @@ fn unit_movement(
     camera: Query<(&Camera, &GlobalTransform), With<Camera3d>>,
     selected: Query<&PlayerSelected>,
     mut commands: Commands,
-    units_and_buildings: Query<Entity, (With<EnemyOwned>, Or<(With<Unit>, With<Building>)>)>,
+    units_and_buildings: Query<
+        Entity,
+        (
+            With<EnemyOwned>,
+            Or<(With<UnitMarker>, With<BuildingMarker>)>,
+        ),
+    >,
     ground: Query<Entity, With<Ground>>,
 ) {
     let (camera, camera_transform) = camera.single();
@@ -128,7 +135,7 @@ fn unit_movement(
         match collision {
             Some(ent) => {
                 if let Ok(_) = ground.get(ent.0) {
-                    // Ground selected // TODO: need to get transform of where they clicked
+                    // Ground selected, set target destination
                     for selected_ent in selected.0.iter() {
                         commands
                             .entity(*selected_ent)
@@ -169,6 +176,7 @@ fn clear_selected(keyboard: Res<Input<KeyCode>>, mut selected: Query<&mut Player
 fn display_debug_inputs() {
     info!("Debug options:");
     info!("Press F1 to display selected entities");
+    info!("Press 1 to build a base");
 }
 
 fn debug_inputs(keyboard: Res<Input<KeyCode>>, selected: Query<&PlayerSelected>) {

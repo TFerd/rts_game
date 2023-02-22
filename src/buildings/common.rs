@@ -19,20 +19,35 @@ pub struct BuildingsPlugin;
 
 impl Plugin for BuildingsPlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<Building>().add_event::<BuildEvent>();
+        app.register_type::<BuildingMarker>()
+            .add_event::<BuildEvent>();
     }
 }
 
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
-pub struct Building; // Marker component
+pub struct BuildingMarker; // Marker component // TODO: add all required stuff here, or create a building template
 
 #[derive(Component)]
 pub struct TrainingQueue;
 
+// TODO: implement this: add all required components
+pub struct Building {}
+
+// TODO: load config file
+
 // TODO
-fn build_buildings(mut ev_build: EventReader<BuildEvent>, mut commands: Commands) {
+fn read_build_events(mut ev_build: EventReader<BuildEvent>, mut commands: Commands) {
     for ev in ev_build.iter() {
         // create building at location
+
+        // maybe make these go to a non-system function
+        match ev.building_type {
+            BuildingType::Base => todo!(),
+            BuildingType::Barracks => todo!(),
+            BuildingType::CoalMine => todo!(),
+        }
     }
 }
+
+fn build_building(commands: &mut Commands, building_type: BuildingType) {}
