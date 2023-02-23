@@ -6,6 +6,7 @@
 use bevy::{prelude::*, utils::FloatOrd};
 use bevy_inspector_egui::{Inspectable, RegisterInspectable};
 use bevy_rapier3d::prelude::{QueryFilter, RapierContext, Real};
+use serde::Deserialize;
 
 use crate::GameState;
 
@@ -21,11 +22,11 @@ pub struct PlayerOwned;
 #[reflect(Component)]
 pub struct EnemyOwned;
 
-#[derive(Component, Reflect, Default)]
+#[derive(Component, Reflect, Default, Deserialize)]
 #[reflect(Component)]
 pub struct Health(pub f32);
 
-#[derive(Component, Reflect, Default)]
+#[derive(Component, Reflect, Default, Deserialize)]
 #[reflect(Component)]
 pub struct Range(pub u32);
 
@@ -33,7 +34,7 @@ pub struct Range(pub u32);
 #[reflect(Component)]
 pub struct AttackCooldown(pub Timer);
 
-#[derive(Component, Reflect, Default)]
+#[derive(Component, Reflect, Default, Deserialize)]
 #[reflect(Component)]
 pub struct Damage(pub u32);
 

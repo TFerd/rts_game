@@ -41,66 +41,51 @@ fn spawn_scene(
         .insert(Name::new("Ground".to_string()));
 
     // player base
-    commands
-        .spawn(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Cube { size: 5.0 })),
-            material: materials.add(Color::BLUE.into()),
-            transform: Transform::from_xyz(-25.0, 2.5, 25.0),
-            ..Default::default()
-        })
-        .insert(BaseBundle {
-            building_type: Base,
-            health: Health(10.0),
-        })
-        .insert(PlayerOwned)
-        //.insert(PickableBundle::default())
-        .insert(Collider::cuboid(2.5, 2.5, 2.5))
-        .insert(Name::new("Player Base".to_string()));
+    // commands
+    //     .spawn(PbrBundle {
+    //         mesh: meshes.add(Mesh::from(shape::Cube { size: 5.0 })),
+    //         material: materials.add(Color::BLUE.into()),
+    //         transform: Transform::from_xyz(-25.0, 2.5, 25.0),
+    //         ..Default::default()
+    //     })
+    //     .insert(BaseBundle {
+    //         building_type: Base,
+    //         health: Health(10.0),
+    //     })
+    //     .insert(PlayerOwned)
+    //     //.insert(PickableBundle::default())
+    //     .insert(Collider::cuboid(2.5, 2.5, 2.5))
+    //     .insert(Name::new("Player Base".to_string()));
 
     // enemy base
-    commands
-        .spawn(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Cube { size: 5.0 })),
-            material: materials.add(Color::RED.into()),
-            transform: Transform::from_xyz(25.0, 2.5, -25.0),
-            ..Default::default()
-        })
-        .insert(BaseBundle {
-            building_type: Base,
-            health: Health(10.0),
-        })
-        .insert(EnemyOwned)
-        //.insert(PickableBundle::default())
-        .insert(Collider::cuboid(2.5, 2.5, 2.5))
-        .insert(Name::new("Enemy Base".to_string()));
 
     // player tank
-    commands
-        .spawn(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),
-            material: materials.add(Color::rgb(0.3, 0.3, 0.9).into()),
-            transform: Transform::from_translation(
-                Vec3::ZERO
-                    + Vec3 {
-                        x: 0.0,
-                        y: 0.5,
-                        z: 0.0,
-                    },
-            ),
-            ..Default::default()
-        })
-        .insert(Unit {
-            health: Health(5.0),
-            range: Range(8),
-            atk_cd: AttackCooldown(Timer::from_seconds(1.5, TimerMode::Once)),
-            damage: Damage(2),
-            unit_type: UnitType::Tank,
-            speed: Speed(5),
-        })
-        .insert(Name::new("Tank".to_string()))
-        .insert(PlayerOwned)
-        .insert(Collider::cuboid(0.5, 0.5, 0.5))
-        .insert(UnitMarker);
+    // commands
+    //     .spawn(PbrBundle {
+    //         mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),
+    //         material: materials.add(Color::rgb(0.3, 0.3, 0.9).into()),
+    //         transform: Transform::from_translation(
+    //             Vec3::ZERO
+    //                 + Vec3 {
+    //                     x: 0.0,
+    //                     y: 0.5,
+    //                     z: 0.0,
+    //                 },
+    //         ),
+    //         ..Default::default()
+    //     })
+    //     .insert(Unit {
+    //         health: Health(5.0),
+    //         range: Range(8),
+    //         atk_cd: AttackCooldown(Timer::from_seconds(1.5, TimerMode::Once)),
+    //         damage: Damage(2),
+    //         unit_type: UnitType::Tank,
+    //         speed: Speed(5),
+    //     })
+    //     .insert(Name::new("Tank".to_string()))
+    //     .insert(PlayerOwned)
+    //     .insert(Collider::cuboid(0.5, 0.5, 0.5))
+    //     .insert(UnitMarker);
 
     // TODO: add sun
     commands.spawn(PointLightBundle {

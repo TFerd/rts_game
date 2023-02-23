@@ -1,7 +1,8 @@
-use std::collections::HashMap;
+use core::fmt;
+
 use std::fs;
 
-use bevy::{app::PluginGroupBuilder, prelude::*};
+use bevy::{app::PluginGroupBuilder, prelude::*, utils::HashMap};
 use bevy_inspector_egui::{Inspectable, RegisterInspectable};
 use bevy_rapier3d::prelude::{Collider, Restitution, RigidBody};
 use serde::Deserialize;
@@ -17,32 +18,17 @@ use super::{
     unit_types::UnitType,
 };
 
-// put plugins from other unit classes here
-pub struct UnitsPluginGroup;
-
-impl PluginGroup for UnitsPluginGroup {
-    fn build(self) -> bevy::app::PluginGroupBuilder {
-        PluginGroupBuilder::start::<Self>().add(UnitsPlugin)
-    }
-}
-
-struct UnitsPlugin;
+pub struct UnitsPlugin;
 impl Plugin for UnitsPlugin {
     fn build(&self, app: &mut App) {
-        // Load units config
-        let units_desc = fs::read_to_string("units.ron").unwrap();
-
-        let units_config: UnitsConfig = ron::de::from_str(&units_desc).unwrap_or_else(|e| {
-            println!("Failed to load config: {}", e);
-            std::process::exit(1);
-        });
-        info!("Units config: {:?}", units_config);
-
-        app.insert_resource(units_config)
-            .register_type::<Speed>()
+        app.register_type::<Speed>()
             .register_inspectable::<TargetDestination>()
             .add_event::<SpawnUnitEvent>()
             .add_event::<UnitDeathEvent>()
+            .add_system_set(
+                SystemSet::on_enter(GameState::Gameplay)
+                    .with_system(Self::load_units_config.label("units")),
+            )
             .add_system_set(
                 SystemSet::on_update(GameState::Gameplay)
                     .with_system(spawn_unit)
@@ -52,23 +38,44 @@ impl Plugin for UnitsPlugin {
     }
 }
 
-#[derive(Clone, Deserialize)]
+impl UnitsPlugin {
+    /// Loads the units config
+    /// Runs upon entering Gameplay state
+    fn load_units_config(mut commands: Commands) {
+        // Load units config
+        let units_desc = fs::read_to_string("src/units/units.ron").unwrap();
+
+        let units_config: UnitsConfig = ron::de::from_str(&units_desc).unwrap_or_else(|e| {
+            println!("Failed to load config: {}", e);
+            std::process::exit(1);
+        });
+        info!("Units config: {:?}", units_config);
+        commands.insert_resource(units_config);
+    }
+}
+
+#[derive(Deserialize, Debug, Resource)]
 pub struct UnitsConfig(HashMap<UnitType, Unit>);
 
+#[derive(Deserialize, Debug)]
+pub struct Unit {
+    // TODO: maybe change the types to the components again
+    pub health: f32,
+    pub range: f32,
+    pub atk_cd: f32,
+    pub damage: f32,
+    pub unit_type: UnitType,
+    pub speed: f32,
+    // TODO: training time
+}
+
+/********************
+ * START COMPONENTS
+ ********************/
 #[derive(Component)]
 pub struct UnitMarker; // Marker component
 
-pub struct Unit {
-    // TODO: make this not a bundle
-    pub health: Health,
-    pub range: Range,
-    pub atk_cd: AttackCooldown,
-    pub damage: Damage,
-    pub unit_type: UnitType,
-    pub speed: Speed,
-}
-
-#[derive(Component, Reflect, Default)]
+#[derive(Component, Reflect, Default, Deserialize)]
 #[reflect(Component)]
 pub struct Speed(pub u32);
 
@@ -94,60 +101,6 @@ fn spawn_unit(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    // TODO: can write less code here
-    for ev in ev_spawnunit.iter() {
-        // let unit = commands.spawn(blah blah);
-        // match unit_type {
-        //    tank => unit.insert(...)
-        //    etc...
-        // }
-
-        // add common stuff here, like maybe stuff passed in from event
-        // ok turns out like nothing is common
-        // maybe make stuff from a config file
-        match ev.unit_type {
-            UnitType::Tank => {
-                info!("Spawning tank.");
-                let tank = commands
-                    .spawn(PbrBundle {
-                        mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),
-                        material: materials.add(if ev.is_player {
-                            Color::rgb(0.3, 0.3, 0.9).into()
-                        } else {
-                            Color::rgb(0.9, 0.3, 0.3).into()
-                        }),
-                        transform: Transform::from_translation(ev.position),
-                        ..Default::default()
-                    })
-                    .insert(Unit {
-                        health: Health(5.0),
-                        range: Range(8),
-                        atk_cd: AttackCooldown(Timer::from_seconds(1.5, TimerMode::Once)),
-                        damage: Damage(2),
-                        unit_type: UnitType::Tank,
-                        speed: Speed(5),
-                    })
-                    .insert(Name::new("Tank".to_string()))
-                    .id();
-
-                if ev.is_player {
-                    commands.entity(tank).insert(PlayerOwned);
-                } else if !ev.is_player {
-                    commands.entity(tank).insert(EnemyOwned);
-                } else {
-                    unreachable!("WTF");
-                }
-            }
-            UnitType::Marine => {
-                info!("Spawning marine.");
-                todo!();
-            }
-            UnitType::Miner => {
-                info!("Spawning miner.");
-                todo!();
-            }
-        }
-    }
 }
 
 // this should happen before spawn unit

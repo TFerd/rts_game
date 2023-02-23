@@ -23,7 +23,7 @@ pub use gamestates::*;
 use input_handling::InputPlugin;
 pub use maps::sandbox_map::*;
 use player::PlayerPlugin;
-use units::common::UnitsPluginGroup;
+use units::common::UnitsPlugin;
 
 fn main() {
     App::new()
@@ -46,7 +46,7 @@ fn main() {
         .add_plugin(PlayerPlugin)
         .add_plugin(InputPlugin)
         .add_plugins(BuildingsPluginGroup)
-        .add_plugins(UnitsPluginGroup)
+        .add_plugin(UnitsPlugin)
         .add_plugin(UtilsPlugin)
         .add_plugin(BuildingGridPlugin)
         //.add_plugin(RapierDebugRenderPlugin)

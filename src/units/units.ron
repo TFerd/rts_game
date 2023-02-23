@@ -1,5 +1,5 @@
-UnitsConfig (
-    units: {
+(    
+    {
         Tank: Unit(
             health: 5.0,
             range: 5.0,
@@ -13,8 +13,8 @@ UnitsConfig (
             range: 2.0,
             atk_cd: 1.0,
             damage: 1.0,
-            unit_type: Tank,
+            unit_type: Marine,
             speed: 2.0
-        )
+        ),
     }
 )
