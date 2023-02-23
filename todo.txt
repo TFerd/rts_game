@@ -19,3 +19,5 @@ beyv_prototype_lyon for drawing lines (unit paths?)
 remember system order of execution later on (maybe move commands after determining target location)
 
 add debug commands to ui
+
+put system functions within their respective structs

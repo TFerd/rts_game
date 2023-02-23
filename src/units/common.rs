@@ -1,6 +1,10 @@
+use std::collections::HashMap;
+use std::fs;
+
 use bevy::{app::PluginGroupBuilder, prelude::*};
 use bevy_inspector_egui::{Inspectable, RegisterInspectable};
 use bevy_rapier3d::prelude::{Collider, Restitution, RigidBody};
+use serde::Deserialize;
 
 use crate::{
     common::{AttackCooldown, Damage, EnemyOwned, Health, PlayerOwned, Range},
@@ -25,7 +29,17 @@ impl PluginGroup for UnitsPluginGroup {
 struct UnitsPlugin;
 impl Plugin for UnitsPlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<Speed>()
+        // Load units config
+        let units_desc = fs::read_to_string("units.ron").unwrap();
+
+        let units_config: UnitsConfig = ron::de::from_str(&units_desc).unwrap_or_else(|e| {
+            println!("Failed to load config: {}", e);
+            std::process::exit(1);
+        });
+        info!("Units config: {:?}", units_config);
+
+        app.insert_resource(units_config)
+            .register_type::<Speed>()
             .register_inspectable::<TargetDestination>()
             .add_event::<SpawnUnitEvent>()
             .add_event::<UnitDeathEvent>()
@@ -38,10 +52,12 @@ impl Plugin for UnitsPlugin {
     }
 }
 
+#[derive(Clone, Deserialize)]
+pub struct UnitsConfig(HashMap<UnitType, Unit>);
+
 #[derive(Component)]
 pub struct UnitMarker; // Marker component
 
-#[derive(Bundle)]
 pub struct Unit {
     // TODO: make this not a bundle
     pub health: Health,
