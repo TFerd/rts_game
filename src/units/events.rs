@@ -1,7 +1,7 @@
 // TODO: class <- ?
 use bevy::prelude::*;
 
-use super::unit_types::UnitType;
+use super::common::UnitType;
 
 pub struct SpawnUnitEvent {
     pub is_player: bool,

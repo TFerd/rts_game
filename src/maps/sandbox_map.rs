@@ -8,10 +8,7 @@ use crate::{
         common::Ground,
     },
     common::{AttackCooldown, Damage, EnemyOwned, Health, PlayerOwned, Range},
-    units::{
-        common::{Speed, Unit, UnitMarker},
-        unit_types::UnitType,
-    },
+    units::common::{Speed, Unit, UnitMarker, UnitType},
     GameState,
 };
 

@@ -7,6 +7,7 @@ use bevy_rapier3d::prelude::*;
 pub const WINDOW_WIDTH: f32 = 1370.0;
 pub const WINDOW_HEIGHT: f32 = 750.0;
 
+mod assets;
 mod buildings;
 mod camera;
 mod common;

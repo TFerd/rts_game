@@ -77,6 +77,8 @@ impl Plugin for UtilsPlugin {
         Systems
 **************************/
 
+fn load_assets(mut commands: Commands, assets: Res<AssetServer>) {}
+
 fn tick_timers(mut timers: Query<&mut AttackCooldown>, time: Res<Time>) {
     for mut timer in timers.iter_mut() {
         timer.0.tick(time.delta());

@@ -1,6 +1,6 @@
 use crate::{
     player::{Player, PlayerSelected},
-    units::{events::SpawnUnitEvent, unit_types::UnitType},
+    units::events::SpawnUnitEvent,
     *,
 };
 

@@ -14,6 +14,7 @@ bevy-inspector-egui = "0.14.0"
 bevy-inspector-egui-rapier = {version = "0.9.0", features = ["rapier3d"]}
 serde = "1.0.152"
 ron = "0.8.0"
+bevy_asset_loader = "0.14.1"
 
 # Enable a small amount of optimization in debug mode
 [profile.dev]

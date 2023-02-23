@@ -32,7 +32,9 @@ pub struct BuildingMarker; // Marker component // TODO: add all required stuff h
 pub struct TrainingQueue;
 
 // TODO: implement this: add all required components
-pub struct Building {}
+pub struct Building {
+    // TODO: queue size, hp, armor?, model
+}
 
 // TODO: load config file
 

@@ -13,10 +13,7 @@ use crate::{
     GameState,
 };
 
-use super::{
-    events::{SpawnUnitEvent, UnitDeathEvent},
-    unit_types::UnitType,
-};
+use super::events::{SpawnUnitEvent, UnitDeathEvent};
 
 pub struct UnitsPlugin;
 impl Plugin for UnitsPlugin {
@@ -49,13 +46,13 @@ impl UnitsPlugin {
             println!("Failed to load config: {}", e);
             std::process::exit(1);
         });
-        info!("Units config: {:?}", units_config);
+        //info!("Units config: {:?}", units_config);
         commands.insert_resource(units_config);
     }
 }
 
 #[derive(Deserialize, Debug, Resource)]
-pub struct UnitsConfig(HashMap<UnitType, Unit>);
+pub struct UnitsConfig(pub HashMap<UnitType, Unit>);
 
 #[derive(Deserialize, Debug)]
 pub struct Unit {
@@ -64,9 +61,24 @@ pub struct Unit {
     pub range: f32,
     pub atk_cd: f32,
     pub damage: f32,
-    pub unit_type: UnitType,
     pub speed: f32,
+    pub model: String,
     // TODO: training time
+    // TODO: building being trained out of
+}
+
+#[derive(Debug, Inspectable, PartialEq, Eq, Clone, Copy, Hash, Deserialize, Component)]
+pub enum UnitType {
+    Tank,
+    Marine,
+}
+
+impl UnitType {
+    // pub fn spawn(self, commands: &mut Commands, config: &UnitsConfig, position: Vec3) -> Entity {
+    //     let unit = commands.spawn(bundle)
+    // }
+
+    // TODO: what about training unit, how will i know which to train | maybe i dont need to, just remove from queue then spawn the unit u removed
 }
 
 /********************
@@ -121,6 +133,7 @@ fn unit_death(
     }
 }
 
+// TODO: maybe move this under the unittypes
 // TODO: fix this shit
 fn move_unit(
     time: Res<Time>,
