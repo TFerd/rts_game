@@ -12,6 +12,7 @@ use bevy_asset_loader::prelude::*;
 //const ASSETS_PATH: &str = "src/assets";
 
 // TODO: add new factions and only load their models
+// TODO: will have to split these up maybe, because if we have animations, materials, etc...
 /// Loads
 #[derive(AssetCollection, Resource)]
 struct GameAssets {
@@ -74,6 +75,10 @@ fn load_configs(mut commands: Commands, assets: Res<GameAssets>) {
     //     // TODO: maybe assert the result of adding?
     //     unit_meshes.insert(*unit.0, handle.clone());
     // }
+
+    let mut unit_meshes: HashMap<UnitType, Handle<Scene>> = HashMap::default();
+    //**********    LOAD ASSETS HERE    ******************
+    unit_meshes.insert(UnitType::Tank.clone(), assets.tank.clone());
 
     commands.insert_resource(units_config);
     commands.insert_resource(AssetMaps { unit_meshes });
