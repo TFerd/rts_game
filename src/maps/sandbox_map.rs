@@ -1,14 +1,11 @@
 use bevy::prelude::*;
-use bevy_mod_picking::*;
 use bevy_rapier3d::prelude::*;
 
 use crate::{
-    buildings::{
-        base::{Base, BaseBundle},
-        common::Ground,
-    },
-    common::{AttackCooldown, Damage, EnemyOwned, Health, PlayerOwned, Range},
-    units::common::{Speed, Unit, UnitMarker, UnitType},
+    assets::AssetMaps,
+    buildings::buildings::Ground,
+    common::{AttackCooldown, Damage, Health, PlayerOwned, Range},
+    units::units::{Speed, UnitMarker, UnitType, UnitsConfig},
     GameState,
 };
 
@@ -22,14 +19,17 @@ impl Plugin for SandboxMapPlugin {
 
 fn spawn_scene(
     mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
+    mut std_meshes: ResMut<Assets<Mesh>>,
+    asset_maps: Res<AssetMaps>,
+    unit_config: Res<UnitsConfig>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    server: Res<AssetServer>,
 ) {
     //let selected_collider_color = materials.add(Color::rgba(0.3, 0.9, 0.3, 0.9).into());
 
     commands
         .spawn(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Plane { size: 70.0 })),
+            mesh: std_meshes.add(Mesh::from(shape::Plane { size: 70.0 })),
             material: materials.add(Color::rgb(0.1, 0.8, 0.1).into()),
             ..Default::default()
         })
@@ -56,7 +56,35 @@ fn spawn_scene(
 
     // enemy base
 
+    let tank_config = unit_config.0.get(&UnitType::Tank).unwrap(); // TODO: handle unwrap or else
+    info!("asset maps in sandbox map: {:?}", asset_maps.unit_meshes);
+    info!(
+        "fuck: {:?}",
+        asset_maps.unit_meshes.get(&UnitType::Tank).unwrap()
+    );
     // player tank
+    commands
+        .spawn(SceneBundle {
+            // scene: asset_maps.unit_meshes.get(&UnitType::Tank).unwrap().clone(),
+            scene: server.load("meshes/tank.glb#Scene0"),
+            transform: Transform::from_translation(Vec3 {
+                x: 0.0,
+                y: 1.5,
+                z: 0.0,
+            }),
+            ..Default::default()
+        })
+        .insert((
+            Health(tank_config.health),
+            Range(tank_config.range as u32),
+            AttackCooldown(Timer::from_seconds(tank_config.atk_cd, TimerMode::Once)),
+            Damage(tank_config.damage as u32),
+            Speed(tank_config.speed as u32),
+            PlayerOwned,
+            UnitMarker,
+            Collider::cuboid(0.5, 0.5, 0.5),
+            Name::new("PlayerTank".to_string()),
+        ));
     // commands
     //     .spawn(PbrBundle {
     //         mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),

@@ -2,10 +2,10 @@ use bevy::prelude::*;
 use bevy_rapier3d::prelude::*;
 
 use crate::{
-    buildings::common::{BuildingMarker, Ground},
-    player::PlayerSelected,
-    units::common::{TargetDestination, UnitMarker},
+    buildings::buildings::{BuildingMarker, Ground},
     common::{get_raycast_collision, EnemyOwned, Target},
+    player::PlayerSelected,
+    units::units::{TargetDestination, UnitMarker},
     GameState,
 };
 

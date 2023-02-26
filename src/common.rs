@@ -64,7 +64,7 @@ impl Plugin for UtilsPlugin {
             .add_event::<AttackEvent>()
             .add_system_set(
                 SystemSet::on_update(GameState::Gameplay)
-                    .with_system(tick_timers)
+                    .with_system(tick_attack_timers)
                     .with_system(aquire_target)
                     .with_system(remove_target)
                     .with_system(attack_target)
@@ -79,7 +79,7 @@ impl Plugin for UtilsPlugin {
 
 fn load_assets(mut commands: Commands, assets: Res<AssetServer>) {}
 
-fn tick_timers(mut timers: Query<&mut AttackCooldown>, time: Res<Time>) {
+fn tick_attack_timers(mut timers: Query<&mut AttackCooldown>, time: Res<Time>) {
     for mut timer in timers.iter_mut() {
         timer.0.tick(time.delta());
     }
@@ -196,7 +196,6 @@ fn apply_damage(mut ev_attack: EventReader<AttackEvent>, mut query: Query<&mut H
 }
 
 /// Returns entity and Vec3 of collision.
-
 pub fn get_raycast_collision(
     query_filter: QueryFilter,
     rapier_context: &RapierContext,

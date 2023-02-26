@@ -1,3 +1,4 @@
+use assets::GameAssetsPlugin;
 use bevy::prelude::*;
 use bevy_inspector_egui::WorldInspectorPlugin;
 use bevy_inspector_egui_rapier::InspectableRapierPlugin;
@@ -17,14 +18,14 @@ mod maps;
 mod player;
 mod units;
 
-use buildings::{building_grid::BuildingGridPlugin, common::BuildingsPluginGroup};
+use buildings::{building_grid::BuildingGridPlugin, buildings::BuildingsPluginGroup};
 pub use camera::*;
 use common::UtilsPlugin;
 pub use gamestates::*;
 use input_handling::InputPlugin;
 pub use maps::sandbox_map::*;
 use player::PlayerPlugin;
-use units::common::UnitsPlugin;
+use units::units::UnitsPlugin;
 
 fn main() {
     App::new()
@@ -41,7 +42,8 @@ fn main() {
             ..Default::default()
         }))
         .add_plugin(WorldInspectorPlugin::new())
-        .add_state(GameState::Gameplay)
+        .add_state(GameState::Loading)
+        .add_plugin(GameAssetsPlugin)
         .add_plugin(SandboxMapPlugin)
         .add_plugin(CameraPlugin)
         .add_plugin(PlayerPlugin)

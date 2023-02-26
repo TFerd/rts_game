@@ -1,13 +1,11 @@
-use super::{base::BasePlugin, building_types::BuildingType, events::BuildEvent};
+use super::{building_types::BuildingType, events::BuildEvent};
 use bevy::{app::PluginGroupBuilder, prelude::*};
 
 pub struct BuildingsPluginGroup;
 
 impl PluginGroup for BuildingsPluginGroup {
     fn build(self) -> bevy::app::PluginGroupBuilder {
-        PluginGroupBuilder::start::<Self>()
-            .add(BasePlugin)
-            .add(BuildingsPlugin)
+        PluginGroupBuilder::start::<Self>().add(BuildingsPlugin)
     }
 }
 

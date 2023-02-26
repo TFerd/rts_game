@@ -54,6 +54,10 @@ impl UnitsPlugin {
 #[derive(Deserialize, Debug, Resource)]
 pub struct UnitsConfig(pub HashMap<UnitType, Unit>);
 
+/// Holds info each unit.
+/// Data is stored in a HashMap with the UnitType enum as the key.
+///
+/// * `model` - The name of the mesh's file. You will not use this to spawn the model. Use model_handle instead.
 #[derive(Deserialize, Debug)]
 pub struct Unit {
     // TODO: maybe change the types to the components again
@@ -107,13 +111,7 @@ pub struct TrainingUnit {
 **************************/
 
 // should i make all of these send out events? no? idk lots of extra code
-fn spawn_unit(
-    mut commands: Commands,
-    mut ev_spawnunit: EventReader<SpawnUnitEvent>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-) {
-}
+fn spawn_unit() {}
 
 // this should happen before spawn unit
 fn train_unit() {}
