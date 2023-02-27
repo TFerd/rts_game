@@ -20,6 +20,9 @@ struct GameAssets {
     // meshes: HashMap<String, Handle<Scene>>,
     #[asset(path = "meshes/tank.glb#Scene0")]
     pub tank: Handle<Scene>,
+
+    #[asset(path = "meshes/marine.glb#Scene0")]
+    pub marine: Handle<Scene>,
 }
 
 /// Asset mappings to be used in the game.
@@ -77,9 +80,11 @@ fn load_configs(mut commands: Commands, assets: Res<GameAssets>) {
     // }
 
     let mut unit_meshes: HashMap<UnitType, Handle<Scene>> = HashMap::default();
-    //**********    LOAD ASSETS HERE    ******************
+    //**********    Assign UnitTypes their models here:    ******************
     unit_meshes.insert(UnitType::Tank.clone(), assets.tank.clone());
+    unit_meshes.insert(UnitType::Marine, assets.marine.clone());
 
+    // Add maps and configs to Resources
     commands.insert_resource(units_config);
     commands.insert_resource(AssetMaps { unit_meshes });
 }
