@@ -1,12 +1,11 @@
 use bevy::{input::mouse::MouseMotion, prelude::*};
-use bevy_mod_picking::*;
+// use bevy_mod_picking::*;
 
 pub struct CameraPlugin;
 
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(DefaultPickingPlugins)
-            .register_type::<CameraMovement>()
+        app.register_type::<CameraMovement>()
             .add_startup_system(spawn_camera)
             .add_system(camera_controls);
     }
@@ -26,7 +25,6 @@ fn spawn_camera(mut commands: Commands) {
             transform: Transform::from_xyz(-10.0, 10.0, 2.0).looking_at(Vec3::ZERO, Vec3::Y),
             ..Default::default()
         })
-        .insert(PickingCameraBundle::default())
         .insert(CameraMovement {
             panning: false,
             pan_speed: 15.0,

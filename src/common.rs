@@ -4,7 +4,7 @@
 */
 
 use bevy::{prelude::*, utils::FloatOrd};
-use bevy_inspector_egui::{Inspectable, RegisterInspectable};
+// use bevy_inspector_egui::{Inspectable, RegisterInspectable};
 use bevy_rapier3d::prelude::{QueryFilter, RapierContext, Real};
 use serde::Deserialize;
 
@@ -39,7 +39,7 @@ pub struct AttackCooldown(pub Timer);
 pub struct Damage(pub u32);
 
 // Sparse-set storage because this is added/removed frequently
-#[derive(Component, Inspectable)]
+#[derive(Component)]
 #[component(storage = "SparseSet")]
 pub struct Target(pub Entity);
 
@@ -56,19 +56,30 @@ pub struct UtilsPlugin;
 
 impl Plugin for UtilsPlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<Health>()
-            .register_type::<Range>()
-            .register_type::<AttackCooldown>()
-            .register_type::<Damage>()
-            .register_inspectable::<Target>()
+        app
+            // .register_type::<Health>()
+            //     .register_type::<Range>()
+            //     .register_type::<AttackCooldown>()
+            //     .register_type::<Damage>()
+            //     .register_inspectable::<Target>()
             .add_event::<AttackEvent>()
-            .add_system_set(
-                SystemSet::on_update(GameState::Gameplay)
-                    .with_system(tick_attack_timers)
-                    .with_system(aquire_target)
-                    .with_system(remove_target)
-                    .with_system(attack_target)
-                    .with_system(apply_damage),
+            // .add_system_set(
+            //     SystemSet::on_update(GameState::Gameplay)
+            //         .with_system(tick_attack_timers)
+            //         .with_system(aquire_target)
+            //         .with_system(remove_target)
+            //         .with_system(attack_target)
+            //         .with_system(apply_damage),
+            // );
+            .add_systems(
+                (
+                    tick_attack_timers,
+                    aquire_target,
+                    remove_target,
+                    attack_target,
+                    apply_damage,
+                )
+                    .in_set(OnUpdate(GameState::Gameplay)),
             );
     }
 }

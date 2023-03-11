@@ -13,7 +13,8 @@ pub struct SandboxMapPlugin;
 
 impl Plugin for SandboxMapPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(GameState::Gameplay).with_system(spawn_scene));
+        // app.add_system_set(SystemSet::on_enter(GameState::Gameplay).with_system(spawn_scene));
+        app.add_system(spawn_scene.in_schedule(OnEnter(GameState::Gameplay)));
     }
 }
 
@@ -29,7 +30,10 @@ fn spawn_scene(
 
     commands
         .spawn(PbrBundle {
-            mesh: std_meshes.add(Mesh::from(shape::Plane { size: 70.0 })),
+            mesh: std_meshes.add(Mesh::from(shape::Plane {
+                size: 70.0,
+                ..default()
+            })),
             material: materials.add(Color::rgb(0.1, 0.8, 0.1).into()),
             ..Default::default()
         })

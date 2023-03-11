@@ -3,7 +3,7 @@ use core::fmt;
 use std::fs;
 
 use bevy::{app::PluginGroupBuilder, prelude::*, utils::HashMap};
-use bevy_inspector_egui::{Inspectable, RegisterInspectable};
+// use bevy_inspector_egui::{Inspectable, RegisterInspectable};
 use bevy_rapier3d::prelude::{Collider, Restitution, RigidBody};
 use serde::Deserialize;
 
@@ -18,26 +18,29 @@ use super::events::{SpawnUnitEvent, UnitDeathEvent};
 pub struct UnitsPlugin;
 impl Plugin for UnitsPlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<Speed>()
-            .register_inspectable::<TargetDestination>()
+        app
+            // app.register_type::<Speed>()
+            // .register_inspectable::<TargetDestination>()
             .add_event::<SpawnUnitEvent>()
             .add_event::<UnitDeathEvent>()
-            .add_system_set(
-                SystemSet::on_enter(GameState::Gameplay)
-                    .with_system(Self::load_units_config.label("units")),
-            )
-            .add_system_set(
-                SystemSet::on_update(GameState::Gameplay)
-                    .with_system(spawn_unit)
-                    .with_system(unit_death)
-                    .with_system(move_unit),
-            );
+            //         .add_system_set(
+            //             SystemSet::on_enter(GameState::Gameplay)
+            //                 .with_system(Self::load_units_config.label("units")),
+            //         )
+            //         .add_system_set(
+            //             SystemSet::on_update(GameState::Gameplay)
+            //                 .with_system(spawn_unit)
+            //                 .with_system(unit_death)
+            //                 .with_system(move_unit),
+            //         );
+            .add_systems((spawn_unit, unit_death, move_unit).in_set(OnUpdate(GameState::Gameplay)));
     }
 }
 
 impl UnitsPlugin {
     /// Loads the units config
     /// Runs upon entering Gameplay state
+    /// TODO: this is already done in the assets
     fn load_units_config(mut commands: Commands) {
         // Load units config
         let units_desc = fs::read_to_string("src/units/units.ron").unwrap();
@@ -71,7 +74,7 @@ pub struct Unit {
     // TODO: building being trained out of
 }
 
-#[derive(Debug, Inspectable, PartialEq, Eq, Clone, Copy, Hash, Deserialize, Component)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize, Component)]
 pub enum UnitType {
     Tank,
     Marine,
@@ -83,6 +86,8 @@ impl UnitType {
     // }
 
     // TODO: what about training unit, how will i know which to train | maybe i dont need to, just remove from queue then spawn the unit u removed
+
+    // TODO: add unit specific systems here for each unit, might want to move them into their own class eventually...
 }
 
 /********************
@@ -95,7 +100,7 @@ pub struct UnitMarker; // Marker component
 #[reflect(Component)]
 pub struct Speed(pub u32);
 
-#[derive(Component, Inspectable)]
+#[derive(Component)]
 #[component(storage = "SparseSet")]
 pub struct TargetDestination(pub Vec3); // Position unit wants to move to. NOT the position of their target
 
@@ -104,6 +109,7 @@ pub struct TargetDestination(pub Vec3); // Position unit wants to move to. NOT t
 #[reflect(Component)]
 pub struct TrainingUnit {
     //building: Entity, // building which they will spawn out of
+    // Vec<UnitType>
 } // ?
 
 /*************************
@@ -117,6 +123,7 @@ fn spawn_unit() {}
 fn train_unit() {}
 
 // Despawns enemies and sends death event for statistics purposes
+// TODO: use the change detection query
 fn unit_death(
     mut commands: Commands,
     mut ev_death: EventWriter<UnitDeathEvent>,

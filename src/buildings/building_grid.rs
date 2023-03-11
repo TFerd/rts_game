@@ -1,19 +1,18 @@
 use bevy::{prelude::*, reflect};
-use bevy_inspector_egui::{egui::Grid, Inspectable};
+use bevy_inspector_egui::egui::Grid;
 
-use crate::{player::Player, GameState};
+use crate::GameState;
 
 pub struct BuildingGridPlugin;
 
 // TODO: need to do stuff like 'after loading the level, apply the grid'
+// TODO: system label
 impl Plugin for BuildingGridPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(
-            SystemSet::on_enter(GameState::Gameplay)
-                .with_system(init_grid_system)
-                .label("init_grid"),
-        )
-        .add_system_set(SystemSet::on_update(GameState::Gameplay).with_system(handle_grid));
+        // app.add_system_set(SystemSet::on_enter(GameState::Gameplay).with_system(init_grid_system))
+        //     .add_system_set(SystemSet::on_update(GameState::Gameplay).with_system(handle_grid));
+        app.add_system(init_grid_system.in_schedule(OnEnter(GameState::Gameplay)))
+            .add_system(handle_grid.in_set(OnUpdate(GameState::Gameplay)));
     }
 }
 

@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_rapier3d::prelude::*;
 
 use crate::{
@@ -13,16 +13,21 @@ pub struct InputPlugin;
 
 impl Plugin for InputPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(
-            SystemSet::on_update(GameState::Gameplay)
-                .with_system(unit_selection)
-                .with_system(clear_selected)
-                .with_system(unit_movement)
-                .with_system(debug_inputs),
+        // app.add_system_set(
+        //     SystemSet::on_update(GameState::Gameplay)
+        //         .with_system(unit_selection)
+        //         .with_system(clear_selected)
+        //         .with_system(unit_movement)
+        //         .with_system(debug_inputs),
+        // );
+        app.add_systems(
+            (unit_selection, clear_selected, unit_movement, debug_inputs)
+                .in_set(OnUpdate(GameState::Gameplay)),
         );
-        app.add_system_set(
-            SystemSet::on_enter(GameState::Gameplay).with_system(display_debug_inputs),
-        );
+        // app.add_system_set(
+        //     SystemSet::on_enter(GameState::Gameplay).with_system(display_debug_inputs),
+        // );
+        app.add_system(display_debug_inputs.in_schedule(OnEnter(GameState::Gameplay)));
     }
 }
 
@@ -54,7 +59,7 @@ impl Plugin for InputPlugin {
 fn unit_selection(
     ground: Query<Entity, With<Ground>>,
     rapier_context: Res<RapierContext>,
-    window: Res<Windows>,
+    window: Query<&Window, With<PrimaryWindow>>,
     camera: Query<(&Camera, &GlobalTransform), With<Camera3d>>,
     mouse: Res<Input<MouseButton>>,
     keyboard: Res<Input<KeyCode>>,
@@ -64,7 +69,10 @@ fn unit_selection(
     if mouse.just_released(MouseButton::Left) {
         let (camera, camera_transform) = camera.single();
 
-        let window = window.get_primary().unwrap();
+        let Ok(window) = window.get_single() else {
+            return; // TODO: handle error?
+        };
+
         let ent = get_raycast_collision(
             QueryFilter::new(),
             &rapier_context,
@@ -105,7 +113,7 @@ fn unit_selection(
 fn unit_movement(
     rapier_context: Res<RapierContext>,
     mouse: Res<Input<MouseButton>>,
-    window: Res<Windows>,
+    window: Query<&Window, With<PrimaryWindow>>,
     camera: Query<(&Camera, &GlobalTransform), With<Camera3d>>,
     selected: Query<&PlayerSelected>,
     mut commands: Commands,
@@ -119,7 +127,9 @@ fn unit_movement(
     ground: Query<Entity, With<Ground>>,
 ) {
     let (camera, camera_transform) = camera.single();
-    let window = window.get_primary().unwrap();
+    let Ok(window) = window.get_single() else {
+        return; // TODO: handle error?
+    };
     if mouse.just_pressed(MouseButton::Right) {
         info!("Right mouse clicked...");
         let selected = selected.single();
@@ -155,7 +165,7 @@ fn unit_movement(
             }
         }
 
-        // check the entity type of collision: building, unit, or ground
+        // check the entity type of collision: building, unit, or ground (<- what?)
 
         // TODO: pathfind
     }

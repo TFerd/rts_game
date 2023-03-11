@@ -38,15 +38,10 @@ pub struct GameAssetsPlugin;
 impl Plugin for GameAssetsPlugin {
     fn build(&self, app: &mut App) {
         app.add_loading_state(
-            LoadingState::new(GameState::Loading)
-                .continue_to_state(GameState::Gameplay)
-                .with_collection::<GameAssets>(), // TODO: add each factions collection
-        );
-        app.add_system_set(
-            SystemSet::on_exit(GameState::Loading)
-                .with_system(load_configs)
-                .label("assets"),
-        );
+            LoadingState::new(GameState::Loading).continue_to_state(GameState::Gameplay), // TODO: add each factions collection
+        )
+        .add_collection_to_loading_state::<_, GameAssets>(GameState::Loading);
+        app.add_system(load_configs.in_schedule(OnExit(GameState::Loading)));
     }
 }
 
@@ -80,6 +75,7 @@ fn load_configs(mut commands: Commands, assets: Res<GameAssets>) {
     // }
 
     let mut unit_meshes: HashMap<UnitType, Handle<Scene>> = HashMap::default();
+
     //**********    Assign UnitTypes their models here:    ******************
     unit_meshes.insert(UnitType::Tank.clone(), assets.tank.clone());
     unit_meshes.insert(UnitType::Marine, assets.marine.clone());
