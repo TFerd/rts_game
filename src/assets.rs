@@ -1,6 +1,7 @@
 use std::fs;
 
 use crate::{
+    buildings::{building_types::BuildingType, buildings::BuildingsConfig},
     units::units::{UnitType, UnitsConfig},
     GameState,
 };
@@ -23,12 +24,16 @@ struct GameAssets {
 
     #[asset(path = "meshes/marine.glb#Scene0")]
     pub marine: Handle<Scene>,
+
+    #[asset(path = "meshes/base.gltf#Scene0")]
+    pub base: Handle<Scene>,
 }
 
 /// Asset mappings to be used in the game.
 #[derive(Resource)]
 pub struct AssetMaps {
     pub unit_meshes: HashMap<UnitType, Handle<Scene>>,
+    pub building_meshes: HashMap<BuildingType, Handle<Scene>>,
     // TODO: materials
     // TODO: building meshes
 }
@@ -56,6 +61,14 @@ fn load_configs(mut commands: Commands, assets: Res<GameAssets>) {
         std::process::exit(1);
     });
 
+    // Load building configs
+    let buildings_desc = fs::read_to_string("src/buildings/buildings.ron").unwrap();
+    let buildings_config: BuildingsConfig =
+        ron::de::from_str(&buildings_desc).unwrap_or_else(|e| {
+            error!("Failed to load config: {}", e);
+            std::process::exit(1);
+        });
+    info!("Done!");
     // // Load unit models (meshes)
     // let mut unit_meshes: HashMap<UnitType, Handle<Scene>> = HashMap::default();
     // for unit in units_config.0.iter() {
@@ -75,12 +88,20 @@ fn load_configs(mut commands: Commands, assets: Res<GameAssets>) {
     // }
 
     let mut unit_meshes: HashMap<UnitType, Handle<Scene>> = HashMap::default();
+    let mut building_meshes: HashMap<BuildingType, Handle<Scene>> = HashMap::default();
 
     //**********    Assign UnitTypes their models here:    ******************
-    unit_meshes.insert(UnitType::Tank.clone(), assets.tank.clone());
+    unit_meshes.insert(UnitType::Tank, assets.tank.clone());
     unit_meshes.insert(UnitType::Marine, assets.marine.clone());
+
+    //**********    Assign BuildingTypes their models here:    ******************
+    building_meshes.insert(BuildingType::Base, assets.base.clone());
 
     // Add maps and configs to Resources
     commands.insert_resource(units_config);
-    commands.insert_resource(AssetMaps { unit_meshes });
+    commands.insert_resource(buildings_config);
+    commands.insert_resource(AssetMaps {
+        unit_meshes,
+        building_meshes,
+    });
 }

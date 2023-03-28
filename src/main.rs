@@ -17,7 +17,7 @@ mod maps;
 mod player;
 mod units;
 
-use buildings::{building_grid::BuildingGridPlugin, buildings::BuildingsPluginGroup};
+use buildings::{building_grid::BuildingGridPlugin, buildings::BuildingsPlugin};
 pub use camera::*;
 use common::UtilsPlugin;
 pub use gamestates::*;
@@ -36,7 +36,7 @@ fn main() {
         .add_plugin(CameraPlugin)
         .add_plugin(PlayerPlugin)
         .add_plugin(InputPlugin)
-        .add_plugins(BuildingsPluginGroup)
+        .add_plugin(BuildingsPlugin)
         .add_plugin(UnitsPlugin)
         .add_plugin(UtilsPlugin)
         .add_plugin(BuildingGridPlugin)

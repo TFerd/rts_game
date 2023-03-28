@@ -1,4 +1,7 @@
-use bevy::{input::mouse::MouseMotion, prelude::*};
+use bevy::{
+    input::mouse::{MouseMotion, MouseScrollUnit, MouseWheel},
+    prelude::*,
+};
 // use bevy_mod_picking::*;
 
 pub struct CameraPlugin;
@@ -7,7 +10,7 @@ impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<CameraMovement>()
             .add_startup_system(spawn_camera)
-            .add_system(camera_controls);
+            .add_system(camera_controls_pan);
     }
 }
 
@@ -27,20 +30,20 @@ fn spawn_camera(mut commands: Commands) {
         })
         .insert(CameraMovement {
             panning: false,
-            pan_speed: 15.0,
+            pan_speed: 20.0,
             mouse_pan_speed: 10.0,
         });
 }
 
 // TODO: add keybinds from settings
-fn camera_controls(
-    mut camera_q: Query<(&mut Transform, &mut CameraMovement), With<Camera3d>>,
+fn camera_controls_pan(
+    mut camera: Query<(&mut Transform, &mut CameraMovement), With<Camera3d>>,
     time: Res<Time>,
     keyboard_input: Res<Input<KeyCode>>,
     mouse_input: Res<Input<MouseButton>>,
     mut ev_mouse_motion: EventReader<MouseMotion>,
 ) {
-    let (mut camera, mut cam_movement) = camera_q.single_mut();
+    let (mut camera, mut cam_movement) = camera.single_mut();
 
     let mut forward = camera.forward();
     forward.y = 0.0;
@@ -85,5 +88,16 @@ fn camera_controls(
 
     if mouse_input.just_released(MouseButton::Right) {
         cam_movement.panning = false;
+    }
+}
+
+fn camera_controls_zoom(mut ev_mouse_wheel: EventReader<MouseWheel>, mut camera: Query<&mut Transform, With<Camera3d>>) {
+    let camera = camera.single_mut();
+    let forward = 
+    for ev in ev_mouse_wheel.iter() {
+        match ev.unit {
+            MouseScrollUnit::Line => {}
+            MouseScrollUnit::Pixel => {}
+        }
     }
 }

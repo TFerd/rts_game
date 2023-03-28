@@ -3,7 +3,7 @@
     TODO: rename to globals.rs or global.rs ?
 */
 
-use bevy::{prelude::*, utils::FloatOrd};
+use bevy::{prelude::*, utils::FloatOrd, window::PrimaryWindow};
 // use bevy_inspector_egui::{Inspectable, RegisterInspectable};
 use bevy_rapier3d::prelude::{QueryFilter, RapierContext, Real};
 use serde::Deserialize;
@@ -206,6 +206,7 @@ fn apply_damage(mut ev_attack: EventReader<AttackEvent>, mut query: Query<&mut H
     }
 }
 
+// TODO: what is the vec3 mean?
 /// Returns entity and Vec3 of collision.
 pub fn get_raycast_collision(
     query_filter: QueryFilter,
@@ -214,18 +215,16 @@ pub fn get_raycast_collision(
     camera_transform: &GlobalTransform,
     window: &Window,
 ) -> Option<(Entity, Vec3)> {
-    let ray = camera.viewport_to_world(camera_transform, window.cursor_position().unwrap());
-    match ray {
-        Some(ray) => {
-            if let Some((entity, toi)) =
-                rapier_context.cast_ray(ray.origin, ray.direction, 500.0, false, query_filter)
-            {
-                let point = ray.origin + ray.direction * toi;
-                Some((entity, point))
-            } else {
-                None
-            }
-        }
-        None => None,
+    let ray = camera
+        .viewport_to_world(camera_transform, window.cursor_position().unwrap())
+        .unwrap();
+
+    if let Some((entity, toi)) =
+        rapier_context.cast_ray(ray.origin, ray.direction, 500.0, false, query_filter)
+    {
+        let point = ray.origin + ray.direction * toi;
+        Some((entity, point))
+    } else {
+        None
     }
 }

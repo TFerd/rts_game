@@ -156,7 +156,8 @@ fn move_unit(
             "Distance is: {}",
             global_transform.translation().distance(target.0)
         );
-        if global_transform.translation().distance(target.0) < 0.5 {
+        // TODO: need to account for the size of the model
+        if global_transform.translation().distance(target.0) < 2.0 {
             info!("Entity arrived at destination, removing target");
             commands.entity(entity).remove::<TargetDestination>();
         } else {

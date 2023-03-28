@@ -3,7 +3,7 @@ use bevy_rapier3d::prelude::*;
 
 use crate::{
     assets::AssetMaps,
-    buildings::buildings::Ground,
+    buildings::{building_types::BuildingType, buildings::Ground, events::BuildEvent},
     common::{AttackCooldown, Damage, Health, PlayerOwned, Range},
     units::units::{Speed, UnitMarker, UnitType, UnitsConfig},
     GameState,
@@ -25,13 +25,14 @@ fn spawn_scene(
     unit_config: Res<UnitsConfig>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     server: Res<AssetServer>,
+    mut ev_build: EventWriter<BuildEvent>,
 ) {
     //let selected_collider_color = materials.add(Color::rgba(0.3, 0.9, 0.3, 0.9).into());
 
     commands
         .spawn(PbrBundle {
             mesh: std_meshes.add(Mesh::from(shape::Plane {
-                size: 70.0,
+                size: 200.0,
                 ..default()
             })),
             material: materials.add(Color::rgb(0.1, 0.8, 0.1).into()),
@@ -42,6 +43,15 @@ fn spawn_scene(
         .insert(Name::new("Ground".to_string()));
 
     // player base
+    ev_build.send(BuildEvent {
+        player: true,
+        building_type: BuildingType::Base,
+        position: Vec3 {
+            x: -25.0,
+            y: 0.0,
+            z: -25.0,
+        },
+    });
     // commands
     //     .spawn(PbrBundle {
     //         mesh: meshes.add(Mesh::from(shape::Cube { size: 5.0 })),
@@ -61,18 +71,14 @@ fn spawn_scene(
     // enemy base
 
     let tank_config = unit_config.0.get(&UnitType::Tank).unwrap(); // TODO: handle unwrap or else
-    info!("asset maps in sandbox map: {:?}", asset_maps.unit_meshes);
-    info!(
-        "fuck: {:?}",
-        asset_maps.unit_meshes.get(&UnitType::Tank).unwrap()
-    );
+
     // player tank
     commands
         .spawn(SceneBundle {
             // scene: asset_maps.unit_meshes.get(&UnitType::Tank).unwrap().clone(),
             scene: server.load("meshes/tank.glb#Scene0"),
             transform: Transform::from_translation(Vec3 {
-                x: 0.0,
+                x: 20.0,
                 y: 1.5,
                 z: 0.0,
             }),

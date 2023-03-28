@@ -1,6 +1,7 @@
 use bevy::prelude::*;
+use serde::Deserialize;
 
-#[derive(Component, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize, Component)]
 pub enum BuildingType {
     Base,
     Barracks,
